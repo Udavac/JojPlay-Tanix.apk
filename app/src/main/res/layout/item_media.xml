@@ -1,73 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="6dp"
-    app:cardCornerRadius="8dp"
-    app:cardBackgroundColor="#1E1E1E"
-    app:cardElevation="4dp">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#0D0D0D"
+    android:padding="48dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="JOJ Play — Prihlásenie"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <View
+        android:layout_width="80dp"
+        android:layout_height="3dp"
+        android:background="#E30613"
+        android:layout_marginBottom="32dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textColor="#AAAAAA"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/inputEmail"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:inputType="textEmailAddress"
+        android:hint="vas@email.sk"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#666666"
+        android:background="@drawable/input_bg"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textSize="18sp"
+        android:layout_marginBottom="24dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusDown="@id/inputPassword"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Heslo"
+        android:textColor="#AAAAAA"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/inputPassword"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:inputType="textPassword"
+        android:hint="••••••••"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#666666"
+        android:background="@drawable/input_bg"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textSize="18sp"
+        android:layout_marginBottom="40dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusDown="@id/btnSave"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="center">
 
-        <!-- Image container -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="16dp"
+            android:text="Zrušiť"
+            android:textSize="16sp"
+            android:backgroundTint="#333333"
+            android:focusable="true"
+            android:nextFocusRight="@id/btnSave"/>
 
-            <!-- Ratio wrapper workaround: fixed height ratio via paddingTop -->
-            <ImageView
-                android:id="@+id/itemImage"
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:scaleType="centerCrop"
-                android:background="#2A2A2A"/>
-
-            <!-- Channel logo overlay -->
-            <ImageView
-                android:id="@+id/itemLogo"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                android:scaleType="fitCenter"
-                android:padding="4dp"/>
-
-            <!-- Badge (LIVE, SERIÁL...) -->
-            <TextView
-                android:id="@+id/itemBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|start"
-                android:layout_margin="6dp"
-                android:paddingStart="6dp"
-                android:paddingEnd="6dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:textColor="#FFFFFF"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:background="#E30613"
-                android:visibility="gone"/>
-
-        </FrameLayout>
-
-        <!-- Title -->
-        <TextView
-            android:id="@+id/itemTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:maxLines="2"
-            android:ellipsize="end"/>
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="Uložiť"
+            android:textSize="16sp"
+            android:backgroundTint="#E30613"
+            android:focusable="true"
+            android:nextFocusLeft="@id/btnCancel"/>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>
