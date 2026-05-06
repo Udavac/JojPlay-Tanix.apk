@@ -1,0 +1,4 @@
+-keep class sk.jojplay.data.** { *; }
+-keep class androidx.media3.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
