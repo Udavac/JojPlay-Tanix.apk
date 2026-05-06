@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#0D0D0D">
 
-    <!-- Top bar -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -31,15 +30,15 @@
 
         <ImageButton
             android:id="@+id/btnSettings"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@android:drawable/ic_menu_preferences"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:tint="#FFFFFF"
+            android:focusable="true"
             android:contentDescription="Nastavenia"/>
     </LinearLayout>
 
-    <!-- Red accent line under top bar -->
     <View
         android:id="@+id/accentLine"
         android:layout_width="match_parent"
@@ -54,6 +53,8 @@
         android:layout_height="0dp"
         android:padding="8dp"
         android:clipToPadding="false"
+        android:focusable="true"
+        android:descendantFocusability="afterDescendants"
         app:layout_constraintTop_toBottomOf="@id/accentLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
