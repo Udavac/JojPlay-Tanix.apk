@@ -79,7 +79,7 @@ class JojPlayRepository(private val token: String) {
                         image = image
                     ))
                 }
-                "ROW" -> {
+              "ROW" -> {
     val name = getLang(item.opt("name")) ?: continue
     if (name in SKIP_ROWS) continue
     val path = item.optString("path", "")
