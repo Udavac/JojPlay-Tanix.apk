@@ -56,4 +56,3 @@ class SettingsActivity : AppCompatActivity() {
         emailInput.requestFocus()
     }
 }
-
