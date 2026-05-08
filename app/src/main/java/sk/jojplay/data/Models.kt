@@ -56,10 +56,10 @@ val LIVE_CHANNELS = listOf(
         logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/jojplus.png"
     ),
     MediaItem(
-        id = "0D9v2CuujVAlLJJTyLWd", type = ItemType.CHANNEL, name = "WAU",
-        preview = "https://cnt.iptv.joj.sk/contentserver/contents/103/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/wautv.png"
-    ),
+    id = "0D9v2CuujVAlLJJTyLWd", type = ItemType.CHANNEL, name = "JOJ Krimi",
+    preview = "https://cnt.iptv.joj.sk/contentserver/contents/103/categories/screenshot/1.jpg",
+    logo = "https://i.ibb.co/WpKqYwVk/jojkrimi.png"
+),
     MediaItem(
         id = "7tl6We5FhLyCfZcmSG6F", type = ItemType.CHANNEL, name = "JOJ 24",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/111/categories/screenshot/1.jpg",
