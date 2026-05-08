@@ -17,7 +17,7 @@ jobs:
       - name: Download gradle wrapper jar
         run: wget -q https://github.com/google/iosched/raw/main/gradle/wrapper/gradle-wrapper.jar -O gradle/wrapper/gradle-wrapper.jar
       - run: chmod +x gradlew
-      - run: ./gradlew assembleDebug
+      - run: ./gradlew assembleDebug --no-build-cache
       - uses: actions/upload-artifact@v4
         with:
           name: jojplay-debug
