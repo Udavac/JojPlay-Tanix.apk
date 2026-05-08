@@ -79,19 +79,15 @@ class JojPlayRepository(private val token: String) {
                         image = image
                     ))
                 }
-                "ROW" -> {
-                    val name = getLang(item.opt("name")) ?: continue
-                    if (name in SKIP_ROWS) continue
-                    val path = item.optString("path", "")
-                    val catId = path.substringAfterLast("/")
-                    if (catId.isBlank() || catId in seen) continue
-                    seen.add(catId)
-                    out.add(MediaItem(id = catId, type = ItemType.CATEGORY, name = name))
-                }
-            }
-        }
-        out
-    }
+               "ROW" -> {
+    val name = getLang(item.opt("name")) ?: continue
+    if (name in SKIP_ROWS) continue
+    val path = item.optString("path", "")
+    val catId = path.substringAfterLast("/")
+    if (catId.isBlank() || catId in seen) continue
+    seen.add(catId)
+    out.add(MediaItem(id = catId, type = ItemType.CATEGORY, name = name))
+}
 
     // ── Category ──────────────────────────────────────────────────────────────
 
