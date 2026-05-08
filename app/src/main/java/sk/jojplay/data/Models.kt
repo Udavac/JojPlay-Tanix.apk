@@ -93,7 +93,7 @@ val LIVE_CHANNELS = listOf(
     MediaItem(
         id = "aYB0bZQo5X5BuuaXl43H", type = ItemType.CHANNEL, name = "CS Film",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/106/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/csfilm.png"
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/cc/cs-film-cz.png"
     ),
     MediaItem(
         id = "UY5IgHcFriJV4Dh54RCS", type = ItemType.CHANNEL, name = "CS History",
