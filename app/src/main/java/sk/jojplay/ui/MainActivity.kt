@@ -91,6 +91,8 @@ class MainActivity : AppCompatActivity() {
                         startActivity(Intent(this@MainActivity, PlayerActivity::class.java).apply {
                             putExtra("url", state.url)
                             putExtra("isDash", state.isDash)
+                            putExtra("channelId", state.channelId)
+                            putExtra("channelName", state.channelName)
                         })
                     }
                     is PlayState.Error -> {
