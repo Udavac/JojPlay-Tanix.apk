@@ -1,109 +1,68 @@
-package sk.jojplay.ui
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
 
-import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.KeyEvent
-import android.view.View
-import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
-import androidx.media3.datasource.DefaultHttpDataSource
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.dash.DashMediaSource
-import androidx.media3.exoplayer.hls.HlsMediaSource
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.ui.PlayerView
-import sk.jojplay.R
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-class PlayerActivity : AppCompatActivity() {
+    <ProgressBar
+        android:id="@+id/playerProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="#E30613"
+        android:visibility="gone"/>
 
-    private lateinit var playerView: PlayerView
-    private lateinit var progressBar: ProgressBar
-    private var player: ExoPlayer? = null
-    private val hideHandler = Handler(Looper.getMainLooper())
-    private val hideRunnable = Runnable { playerView.hideController() }
+    <!-- EPG overlay dole -->
+    <LinearLayout
+        android:id="@+id/epgContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="#99000000"
+        android:padding="16dp"
+        android:visibility="gone">
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
+        <TextView
+            android:id="@+id/epgTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
-        playerView  = findViewById(R.id.playerView)
-        progressBar = findViewById(R.id.playerProgress)
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dp">
 
-        playerView.controllerShowTimeoutMs = 3000
-        playerView.controllerAutoShow = false
+            <TextView
+                android:id="@+id/epgTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#CCCCCC"
+                android:textSize="13sp"
+                android:layout_marginEnd="12dp"/>
 
-        val url   = intent.getStringExtra("url") ?: run { finish(); return }
-        val isDash = intent.getBooleanExtra("isDash", true)
+            <ProgressBar
+                android:id="@+id/epgProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="6dp"
+                android:layout_weight="1"
+                android:progressTint="#E30613"
+                android:progressBackgroundTint="#555555"
+                android:max="100"/>
 
-        initPlayer(url, isDash)
-        scheduleHide()
-    }
+        </LinearLayout>
 
-    private fun scheduleHide() {
-        hideHandler.removeCallbacks(hideRunnable)
-        hideHandler.postDelayed(hideRunnable, 3000)
-    }
+    </LinearLayout>
 
-    private fun initPlayer(url: String, isDash: Boolean) {
-        player = ExoPlayer.Builder(this).build().also { exo ->
-            playerView.player = exo
-            val dsf = DefaultHttpDataSource.Factory()
-                .setUserAgent("JojPlay/2.0 Android")
-                .setAllowCrossProtocolRedirects(true)
-            val src = when {
-                isDash || url.contains(".mpd") ->
-                    DashMediaSource.Factory(dsf).createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                url.contains(".m3u8") ->
-                    HlsMediaSource.Factory(dsf).createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                else ->
-                    ProgressiveMediaSource.Factory(dsf).createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-            }
-            exo.setMediaSource(src)
-            exo.prepare()
-            exo.playWhenReady = true
-            exo.addListener(object : Player.Listener {
-                override fun onPlaybackStateChanged(state: Int) {
-                    progressBar.visibility = if (state == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
-                    if (state == Player.STATE_READY) scheduleHide()
-                }
-                override fun onPlayerError(error: PlaybackException) {
-                    Toast.makeText(this@PlayerActivity, "Chyba: ${error.localizedMessage}", Toast.LENGTH_LONG).show()
-                    finish()
-                }
-            })
-        }
-    }
-
-    override fun onPause()   { super.onPause();  player?.pause() }
-    override fun onResume()  { super.onResume(); player?.play()  }
-    override fun onDestroy() {
-        super.onDestroy()
-        hideHandler.removeCallbacks(hideRunnable)
-        player?.release(); player = null
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return when (keyCode) {
-            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_DPAD_CENTER -> {
-                player?.let { if (it.isPlaying) it.pause() else it.play() }
-                scheduleHide(); true
-            }
-            KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> { finish(); true }
-            KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                player?.seekTo((player!!.currentPosition + 10_000).coerceAtMost(player!!.duration))
-                scheduleHide(); true
-            }
-            KeyEvent.KEYCODE_DPAD_LEFT -> {
-                player?.seekTo((player!!.currentPosition - 10_000).coerceAtLeast(0))
-                scheduleHide(); true
-            }
-            else -> { playerView.showController(); scheduleHide(); super.onKeyDown(keyCode, event) }
-        }
-    }
-}
+</FrameLayout>
