@@ -150,11 +150,13 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
                 } else {
                     val msg = result.errorMessage ?: ""
                     val isPremium = msg.contains("subscription", ignoreCase = true) ||
-                                    msg.contains("premium", ignoreCase = true) ||
-                                    msg.contains("SUBSCRIPTION_REQUIRED", ignoreCase = true) ||
-                                    msg.contains("not entitled", ignoreCase = true) ||
-                                    msg.contains("unauthorized", ignoreCase = true) ||
-                                    msg.contains("403", ignoreCase = true)
+                msg.contains("premium", ignoreCase = true) ||
+                msg.contains("monetized", ignoreCase = true) ||
+                msg.contains("purchased", ignoreCase = true) ||
+                msg.contains("SUBSCRIPTION_REQUIRED", ignoreCase = true) ||
+                msg.contains("not entitled", ignoreCase = true) ||
+                msg.contains("unauthorized", ignoreCase = true) ||
+                msg.contains("403", ignoreCase = true)
                     _playState.value = PlayState.Error(
                         if (isPremium) "⭐ IBA PREMIUM" else msg.ifBlank { "Nepodarilo sa načítať URL" }
                     )
