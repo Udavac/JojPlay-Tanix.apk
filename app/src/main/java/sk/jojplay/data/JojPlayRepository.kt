@@ -79,19 +79,13 @@ class JojPlayRepository(private val token: String) {
                         image = image
                     ))
                 }
-                "ROW" -> {
-                    val name = getLang(item.opt("name")) ?: continue
-                    if (name in SKIP_ROWS) continue
-                    val path = item.optString("path", "")
-                    val catId = path.substringAfterLast("/")
-                    if (catId.isBlank() || catId in seen) continue
-                    seen.add(catId)
-                    out.add(MediaItem(id = catId, type = ItemType.CATEGORY, name = name))
-                }
-            }
-        }
-        out
+             val rowImage = firstTile?.optJSONObject("itemSpecificData")
+    ?.optJSONObject("assets")?.let { extractImage(it) }
+    ?: firstTile?.let {
+        val id = it.optString("id")
+        if (id.isNotEmpty()) "https://assets.tivio.studio/videos/$id/cover" else null
     }
+out.add(MediaItem(id = catId, type = ItemType.CATEGORY, name = name, image = rowImage))  
 
     // ── Category ──────────────────────────────────────────────────────────────
 
