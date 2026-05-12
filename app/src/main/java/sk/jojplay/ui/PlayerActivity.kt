@@ -48,17 +48,17 @@ class PlayerActivity : AppCompatActivity() {
     // Mapa Tivio channel ID -> sms.cz názov stanice
     private val SMS_CHANNEL_MAP = mapOf(
         "33-joj" to "JOJ",
-        "60K9GwR6CLApIHVyNYOj" to "JOJ+Plus",
-        "0D9v2CuujVAlLJJTyLWd" to "JOJ+Krimi",
-        "15441-joj-24" to "JOJ+24",
-        "OE8iUSCBeLn8CIb0mL57" to "JOJ+Sport",
-        "XA7YXR0HIuS4HGVgSZli" to "JOJ+Sport+2",
-        "vSmKCe7UZp40PvCLXvtb" to "JOJ+Svet",
-        "oALPnvtbTB4yuM4cLpnF" to "Jojko",
-        "7oGizuVUXRJGckpoVGUB" to "JOJ+Cinema",
-        "aYB0bZQo5X5BuuaXl43H" to "CS+Film",
-        "UY5IgHcFriJV4Dh54RCS" to "CS+History",
-        "cIM4bKpVNVziiCrs5LJk" to "CS+Mystery"
+        "206-joj-plus" to "JOJ Plus",
+        "718-wau" to "JOJ Krimi",
+        "15441-joj-24" to "JOJ 24",
+        "15291-joj-sport" to "JOJ Sport",
+        "15611-joj-šport-2" to "JOJ Sport 2",
+        "15509-joj-svet" to "JOJ Svet",
+        "999-jojko" to "Jojko",
+        "1023-joj-cinema" to "JOJ Cinema",
+        "1149-cs-film" to "CS Film",
+        "1187-cs-history" to "CS History",
+        "717-cs-mystery" to "CS Mystery"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
