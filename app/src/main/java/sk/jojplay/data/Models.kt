@@ -34,98 +34,98 @@ data class MediaItem(
 // ── Screens s obrázkami ───────────────────────────────────────────────────────
 
 val SCREENS = linkedMapOf(
-    "Domov"         to "screen-Lxye9UzYirbdU8gT6zIZ",
-    "Filmy"         to "screen-sDYvdxFDr6YuXBrJNq4Pf",
-    "Seriály"       to "screen-6u1OuNZpEZJ5mvFAr_kwA",
-    "Spravodajstvo" to "screen-uTwlSTUjxtlq9fJaT9L_2",
-    "Šport"         to "screen-jNBx-DFZSx6PazsFvlPol",
-    "Deti"          to "screen-vmptBEawEZaKP5VzokZeE"
+    "Domov"         to "screen-wr8Prx78/home4",
+    "Filmy"         to "screen-LzwX5ynV/film",
+    "Seriály"       to "screen-5xrKDGC0/cinema",
+    "Spravodajstvo" to "screen-WNVBxfVX/news",
+    "Šport"         to "screen-jPwD9VPL/sport",
+    "Deti"          to "screen-Y4mbYyZg/kids2"
 )
 
 // Statické obrázky pre hlavné kategórie (z Tivio CDN)
 val SCREEN_IMAGES = mapOf(
-    "screen-Lxye9UzYirbdU8gT6zIZ" to "https://assets.tivio.studio/organizations/dEpbY0V54AE34rFO7dB2/screens/screen-Lxye9UzYirbdU8gT6zIZ/background/@1/background.jpg",
-    "screen-sDYvdxFDr6YuXBrJNq4Pf" to "https://assets.tivio.studio/organizations/dEpbY0V54AE34rFO7dB2/screens/screen-sDYvdxFDr6YuXBrJNq4Pf/background/@1/background.jpg",
-    "screen-6u1OuNZpEZJ5mvFAr_kwA" to "https://assets.tivio.studio/organizations/dEpbY0V54AE34rFO7dB2/screens/screen-6u1OuNZpEZJ5mvFAr_kwA/background/@1/background.jpg",
-    "screen-uTwlSTUjxtlq9fJaT9L_2" to "https://assets.tivio.studio/organizations/dEpbY0V54AE34rFO7dB2/screens/screen-uTwlSTUjxtlq9fJaT9L_2/background/@1/background.jpg",
-    "screen-jNBx-DFZSx6PazsFvlPol" to "https://assets.tivio.studio/organizations/dEpbY0V54AE34rFO7dB2/screens/screen-jNBx-DFZSx6PazsFvlPol/background/@1/background.jpg",
-    "screen-vmptBEawEZaKP5VzokZeE" to "https://assets.tivio.studio/organizations/dEpbY0V54AE34rFO7dB2/screens/screen-vmptBEawEZaKP5VzokZeE/background/@1/background.jpg"
+    "screen-Lxye9UzYirbdU8gT6zIZ" to "https://i.ibb.co/wr8Prx78/home4.jpg",
+    "screen-sDYvdxFDr6YuXBrJNq4Pf" to "https://i.ibb.co/wr8Prx78/home4.jpg",
+    "screen-6u1OuNZpEZJ5mvFAr_kwA" to "https://i.ibb.co/5xrKDGC0/cinema.jpg",
+    "screen-uTwlSTUjxtlq9fJaT9L_2" to "https://i.ibb.co/WNVBxfVX/news.jpg",
+    "screen-jNBx-DFZSx6PazsFvlPol" to "https://i.ibb.co/jPwD9VPL/sport.jpg",
+    "screen-vmptBEawEZaKP5VzokZeE" to "https://i.ibb.co/Y4mbYyZg/kids2.jpg"
 )
 
 // ── Live channels s EPG ID pre sms.cz ────────────────────────────────────────
 
 val LIVE_CHANNELS = listOf(
     MediaItem(
-        id = "LYyAwEjjqmj8kMY23Lqw", type = ItemType.CHANNEL, name = "JOJ",
+        id = "33-joj", type = ItemType.CHANNEL, name = "JOJ",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/101/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/tvjoj.png",
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj_tv_sk.png",
         description = "JOJ"  // sms.cz site_id
     ),
     MediaItem(
-        id = "60K9GwR6CLApIHVyNYOj", type = ItemType.CHANNEL, name = "JOJ Plus",
+        id = "206-joj-plus", type = ItemType.CHANNEL, name = "JOJ Plus",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/102/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/jojplus.png",
-        description = "JOJ+Plus"
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj-plus-sk.png",
+        description = "JOJ Plus"
     ),
     MediaItem(
-        id = "0D9v2CuujVAlLJJTyLWd", type = ItemType.CHANNEL, name = "JOJ Krimi",
+        id = "718-wau", type = ItemType.CHANNEL, name = "JOJ Krimi",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/103/categories/screenshot/1.jpg",
-        logo = "https://i.ibb.co/WpKqYwVk/jojkrimi.png",
-        description = "WAU"
+        logo = "https://www.lyngsat.com/logo/tv/jj/joj-krimi-sk.png",
+        description = "JOJ Krimi"
     ),
     MediaItem(
-        id = "7tl6We5FhLyCfZcmSG6F", type = ItemType.CHANNEL, name = "JOJ 24",
+        id = "15441-joj-24", type = ItemType.CHANNEL, name = "JOJ 24",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/111/categories/screenshot/1.jpg",
-        logo = "https://i.ibb.co/fV5RJx6G/joj24.png",
-        description = "JOJ+24"
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj-24-sk.png",
+        description = "JOJ 24"
     ),
     MediaItem(
-        id = "OE8iUSCBeLn8CIb0mL57", type = ItemType.CHANNEL, name = "JOJ Šport",
+        id = "15291-joj-sport", type = ItemType.CHANNEL, name = "JOJ Šport",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/110/categories/screenshot/1.jpg",
-        logo = "https://i.ibb.co/wFqgKVzN/jojsport.png",
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj-sport-sk.png",
         description = "JOJ+%8Aport"
     ),
     MediaItem(
-        id = "XA7YXR0HIuS4HGVgSZli", type = ItemType.CHANNEL, name = "JOJ Šport 2",
+        id = "15611-joj-šport-2", type = ItemType.CHANNEL, name = "JOJ Šport 2",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/118/categories/screenshot/1.jpg",
-        logo = "https://i.ibb.co/pr5mtbP2/jojsport2.png",
+        logo = "https://www.lyngsat.com/logo/tv/jj/joj-sport-2-sk.png",
         description = "JOJ+%8Aport+2"
     ),
     MediaItem(
-        id = "vSmKCe7UZp40PvCLXvtb", type = ItemType.CHANNEL, name = "JOJ Svet",
+        id = "15509-joj-svet", type = ItemType.CHANNEL, name = "JOJ Svet",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/114/categories/screenshot/1.jpg",
-        logo = "https://i.ibb.co/wh64Gf8X/jojsvet.png",
-        description = "JOJ+Svet"
+        logo = "https://www.lyngsat.com/logo/tv/jj/joj-svet-sk.png",
+        description = "JOJ Svet"
     ),
     MediaItem(
-        id = "oALPnvtbTB4yuM4cLpnF", type = ItemType.CHANNEL, name = "JOJko",
+        id = "999-jojko", type = ItemType.CHANNEL, name = "Jojko",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/104/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/jojko.png",
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/jojko-sk.png",
         description = "Jojko"
     ),
     MediaItem(
-        id = "7oGizuVUXRJGckpoVGUB", type = ItemType.CHANNEL, name = "JOJ Cinema",
+        id = "1023-joj-cinema", type = ItemType.CHANNEL, name = "JOJ Cinema",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/105/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/jojcinema.png",
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj_tv_sk_cinema.png",
         description = "JOJ+Cinema"
     ),
     MediaItem(
-        id = "aYB0bZQo5X5BuuaXl43H", type = ItemType.CHANNEL, name = "CS Film",
+        id = "1149-cs-film", type = ItemType.CHANNEL, name = "CS Film",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/106/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/csfilm.png",
-        description = "CS+Film"
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/cc/cs-film-cz.png",
+        description = "CS Film"
     ),
     MediaItem(
-        id = "UY5IgHcFriJV4Dh54RCS", type = ItemType.CHANNEL, name = "CS History",
+        id = "1187-cs-history", type = ItemType.CHANNEL, name = "CS History",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/107/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/cshistory.png",
-        description = "CS+History"
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/cc/cs-history-cz.png",
+        description = "CS History"
     ),
     MediaItem(
-        id = "cIM4bKpVNVziiCrs5LJk", type = ItemType.CHANNEL, name = "CS Mystery",
+        id = "717-cs-mystery", type = ItemType.CHANNEL, name = "CS Mystery",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/108/categories/screenshot/1.jpg",
-        logo = "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/csmystery.png",
-        description = "CS+Mystery"
+        logo = "https://kabelko.sk/images/logo_tv_radio/tv/cc/cs-mystery-cz.png",
+        description = "CS Mystery"
     )
 )
 
