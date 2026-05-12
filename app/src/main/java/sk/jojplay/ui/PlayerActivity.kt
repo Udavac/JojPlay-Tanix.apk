@@ -47,7 +47,7 @@ class PlayerActivity : AppCompatActivity() {
 
     // Mapa Tivio channel ID -> sms.cz názov stanice
     private val SMS_CHANNEL_MAP = mapOf(
-        "33-joj" to "JOJ",
+        "60K9GwR6CLApIHVyNYOj" to "JOJ",
         "206-joj-plus" to "JOJ+Plus",
         "718-wau" to "JOJ+Krimi",
         "15441-joj-24" to "JOJ+24",
