@@ -45,20 +45,20 @@ class PlayerActivity : AppCompatActivity() {
     private var epgRefreshRunnable: Runnable? = null
     private val client = OkHttpClient()
 
-    // Mapa Tivio channel ID -> sms.cz názov stanice
+    // Mapa SMS channel ID -> sms.cz názov stanice
     private val SMS_CHANNEL_MAP = mapOf(
-        "60K9GwR6CLApIHVyNYOj" to "JOJ",
-        "206-joj-plus" to "JOJ+Plus",
-        "718-wau" to "JOJ+Krimi",
-        "15441-joj-24" to "JOJ+24",
-        "15291-joj-sport" to "JOJ+%8Aport",
-        "15611-joj-šport-2" to "JOJ+%8Aport+2",
-        "15509-joj-svet" to "JOJ+Svet",
-        "999-jojko" to "Jojko",
-        "1023-joj-cinema" to "JOJ+Cinema",
-        "1149-cs-film" to "CS+Film",
-        "1187-cs-history" to "CS+History",
-        "717-cs-mystery" to "CS+History"
+        "33-joj"            to "JOJ",
+        "206-joj-plus"      to "JOJ+Plus",
+        "718-wau"           to "WAU",
+        "15441-joj-24"      to "JOJ+24",
+        "15291-joj-sport"   to "JOJ+%8Aport",
+        "15611-joj-sport-2" to "JOJ+%8Aport+2",
+        "15509-joj-svet"    to "JOJ+Svet",
+        "999-jojko"         to "Jojko",
+        "1023-joj-cinema"   to "JOJ+Cinema",
+        "1149-cs-film"      to "CS+Film",
+        "1187-cs-history"   to "CS+History",
+        "717-cs-mystery"    to "CS+Mystery"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
