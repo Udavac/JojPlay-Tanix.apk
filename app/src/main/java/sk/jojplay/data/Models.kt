@@ -44,12 +44,12 @@ val SCREENS = linkedMapOf(
 
 // Statické obrázky pre hlavné kategórie (z Tivio CDN)
 val SCREEN_IMAGES = mapOf(
-    "screen-Lxye9UzYirbdU8gT6zIZ" to "https://i.ibb.co/wr8Prx78/home4.jpg",
-    "screen-sDYvdxFDr6YuXBrJNq4Pf" to "https://i.ibb.co/wr8Prx78/home4.jpg",
-    "screen-6u1OuNZpEZJ5mvFAr_kwA" to "https://i.ibb.co/5xrKDGC0/cinema.jpg",
-    "screen-uTwlSTUjxtlq9fJaT9L_2" to "https://i.ibb.co/WNVBxfVX/news.jpg",
-    "screen-jNBx-DFZSx6PazsFvlPol" to "https://i.ibb.co/jPwD9VPL/sport.jpg",
-    "screen-vmptBEawEZaKP5VzokZeE" to "https://i.ibb.co/Y4mbYyZg/kids2.jpg"
+    "screen-wr8Prx78/home4" to "https://i.ibb.co/wr8Prx78/home4.jpg",
+    "screen-LzwX5ynV/film" to "https://i.ibb.co/LzwX5ynV/film.jpg",
+    "screen-5xrKDGC0/cinema" to "https://i.ibb.co/5xrKDGC0/cinema.jpg",
+    "screen-WNVBxfVX/news" to "https://i.ibb.co/WNVBxfVX/news.jpg",
+    "screen-jNBx-jPwD9VPL/sport" to "https://i.ibb.co/jPwD9VPL/sport.jpg",
+    "screen-Y4mbYyZg/kids2" to "https://i.ibb.co/Y4mbYyZg/kids2.jpg"
 )
 
 // ── Live channels s EPG ID pre sms.cz ────────────────────────────────────────
@@ -65,37 +65,37 @@ val LIVE_CHANNELS = listOf(
         id = "206-joj-plus", type = ItemType.CHANNEL, name = "JOJ+Plus",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/102/categories/screenshot/1.jpg",
         logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj-plus-sk.png",
-        description = "JOJ+Plus"
+        description = "JOJ Plus"
     ),
     MediaItem(
         id = "718-wau", type = ItemType.CHANNEL, name = "JOJ+Krimi",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/103/categories/screenshot/1.jpg",
         logo = "https://www.lyngsat.com/logo/tv/jj/joj-krimi-sk.png",
-        description = "JOJ+Krimi"
+        description = "JOJ Krimi"
     ),
     MediaItem(
         id = "15441-joj-24", type = ItemType.CHANNEL, name = "JOJ+24",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/111/categories/screenshot/1.jpg",
         logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj-24-sk.png",
-        description = "JOJ+24"
+        description = "JOJ 24"
     ),
     MediaItem(
         id = "15291-joj-sport", type = ItemType.CHANNEL, name = "JOJ+%8Aport",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/110/categories/screenshot/1.jpg",
         logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj-sport-sk.png",
-        description = "JOJ+%8Aport"
+        description = "JOJ Šport"
     ),
     MediaItem(
         id = "15611-joj-šport-2", type = ItemType.CHANNEL, name = "JOJ+%8Aport+2",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/118/categories/screenshot/1.jpg",
         logo = "https://www.lyngsat.com/logo/tv/jj/joj-sport-2-sk.png",
-        description = "JOJ+%8Aport+2"
+        description = "JOJ Šport 2"
     ),
     MediaItem(
         id = "15509-joj-svet", type = ItemType.CHANNEL, name = "JOJ+Svet",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/114/categories/screenshot/1.jpg",
         logo = "https://www.lyngsat.com/logo/tv/jj/joj-svet-sk.png",
-        description = "JOJ+Svet"
+        description = "JOJ Svet"
     ),
     MediaItem(
         id = "999-jojko", type = ItemType.CHANNEL, name = "Jojko",
@@ -107,25 +107,25 @@ val LIVE_CHANNELS = listOf(
         id = "1023-joj-cinema", type = ItemType.CHANNEL, name = "JOJ+Cinema",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/105/categories/screenshot/1.jpg",
         logo = "https://kabelko.sk/images/logo_tv_radio/tv/jj/joj_tv_sk_cinema.png",
-        description = "JOJ+Cinema"
+        description = "JOJ Cinema"
     ),
     MediaItem(
         id = "1149-cs-film", type = ItemType.CHANNEL, name = "CS+Film",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/106/categories/screenshot/1.jpg",
         logo = "https://kabelko.sk/images/logo_tv_radio/tv/cc/cs-film-cz.png",
-        description = "CS+Film"
+        description = "CS Film"
     ),
     MediaItem(
         id = "1187-cs-history", type = ItemType.CHANNEL, name = "CS+History",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/107/categories/screenshot/1.jpg",
         logo = "https://kabelko.sk/images/logo_tv_radio/tv/cc/cs-history-cz.png",
-        description = "CS+History"
+        description = "CS History"
     ),
     MediaItem(
         id = "717-cs-mystery", type = ItemType.CHANNEL, name = "CS+Mystery",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/108/categories/screenshot/1.jpg",
         logo = "https://kabelko.sk/images/logo_tv_radio/tv/cc/cs-mystery-cz.png",
-        description = "CS+Mystery"
+        description = "CS Mystery"
     )
 )
 
