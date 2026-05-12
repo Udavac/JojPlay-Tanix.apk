@@ -33,14 +33,24 @@ data class MediaItem(
 
 // ── Screens s obrázkami ───────────────────────────────────────────────────────
 
+val SCREENS = linkedMapOf(
+    "Domov"         to "domov",
+    "Filmy"         to "filmy",
+    "Seriály"       to "serialy",
+    "Spravodajstvo" to "spravodajstvo",
+    "Šport"         to "sport",
+    "Deti"          to "deti",
+    "Live TV"       to "live"
+)
+
 val SCREEN_IMAGES = mapOf(
-    "Domov"         to "https://i.ibb.co/wr8Prx78/home4.jpg",
-    "Filmy"         to "https://i.ibb.co/LzwX5ynV/film.jpg",
-    "Serialy"       to "https://i.ibb.co/5xrKDGC0/cinema.jpg",
-    "Spravodajstvo" to "https://i.ibb.co/WNVBxfVX/news.jpg",
-    "Šport"         to "https://i.ibb.co/jPwD9VPL/sport.jpg",
-    "Deti"          to "https://i.ibb.co/Y4mbYyZg/kids2.jpg",
-    "Live TV"          to "https://i.ibb.co/k6BZLrqF/live-stream.jpg"
+    "domov"         to "https://i.ibb.co/wr8Prx78/home4.jpg",
+    "filmy"         to "https://i.ibb.co/LzwX5ynV/film.jpg",
+    "serialy"       to "https://i.ibb.co/5xrKDGC0/cinema.jpg",
+    "spravodajstvo" to "https://i.ibb.co/WNVBxfVX/news.jpg",
+    "sport"         to "https://i.ibb.co/jPwD9VPL/sport.jpg",
+    "deti"          to "https://i.ibb.co/Y4mbYyZg/kids2.jpg",
+    "live"          to "https://i.ibb.co/k6BZLrqF/live-stream.jpg"
 )
 
 // ── Live channels s EPG ID pre sms.cz ────────────────────────────────────────
