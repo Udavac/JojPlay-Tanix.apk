@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         adapter = MediaAdapter { item -> vm.onItemClick(item) }
         recycler.adapter = adapter
 
-        // Settings button — TV remote OK on focused button
         val btnSettings = findViewById<ImageButton>(R.id.btnSettings)
         btnSettings.setOnClickListener { openSettings() }
         btnSettings.setOnFocusChangeListener { v, hasFocus ->
@@ -68,7 +67,6 @@ class MainActivity : AppCompatActivity() {
                         recycler.visibility    = View.VISIBLE
                         titleView.text = state.title
                         adapter.submitList(state.items)
-                        // Focus first item for remote control
                         recycler.post {
                             recycler.layoutManager?.findViewByPosition(0)?.requestFocus()
                         }
@@ -91,6 +89,8 @@ class MainActivity : AppCompatActivity() {
                         startActivity(Intent(this@MainActivity, PlayerActivity::class.java).apply {
                             putExtra("url", state.url)
                             putExtra("isDash", state.isDash)
+                            putExtra("channelId", state.channelId)
+                            putExtra("channelName", state.channelName)
                         })
                     }
                     is PlayState.Error -> {
@@ -155,7 +155,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Re-focus recycler after returning from player/settings
         recycler.post {
             recycler.layoutManager?.findViewByPosition(0)?.requestFocus()
         }
@@ -202,20 +201,24 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
                 else             -> badge.visibility = View.GONE
             }
 
-            // Image
+            // Image – pre CHANNEL použi image (nie preview) ak je dostupný,
+            // inak fallback na preview
             val imageUrl = when (item.type) {
-                ItemType.CHANNEL -> item.preview
+                ItemType.CHANNEL -> item.image ?: item.preview
                 else -> item.image
             }
             if (!imageUrl.isNullOrEmpty()) {
-                Glide.with(itemView).load(imageUrl).centerCrop()
-                    .placeholder(R.drawable.placeholder).into(image)
+                Glide.with(itemView)
+                    .load(imageUrl)
+                    .fitCenter()                          // ← oprava: fitCenter namiesto centerCrop
+                    .placeholder(R.drawable.placeholder)
+                    .into(image)
             } else {
                 image.setImageResource(R.drawable.placeholder)
             }
 
-            // Channel logo overlay
-            if (item.type == ItemType.CHANNEL && !item.logo.isNullOrEmpty()) {
+            // Channel logo overlay – len pre kanály s preview (nie pre __live__)
+            if (item.type == ItemType.CHANNEL && !item.logo.isNullOrEmpty() && !item.preview.isNullOrEmpty()) {
                 logo.visibility = View.VISIBLE
                 Glide.with(itemView).load(item.logo).fitCenter().into(logo)
             } else {
