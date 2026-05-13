@@ -163,6 +163,7 @@ class PlayerActivity : AppCompatActivity() {
                         epgTitle.text = currentTitle
                         epgTime.text = if (nextStart.isNotEmpty()) "$currentStart – $nextStart" else currentStart
                         epgBar.progress = progress
+                        epgContainer.visibility = View.VISIBLE  // ← OPRAVA: zobraz EPG
                     }
 
                     // Obnov o 5 minút
