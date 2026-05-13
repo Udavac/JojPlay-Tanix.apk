@@ -71,8 +71,20 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
                 name = name,
                 image = SCREEN_IMAGES[id]
             )
-        } + MediaItem(id = "__live__", type = ItemType.CHANNEL, name = "TV naživo") +
-          MediaItem(id = "__search__", type = ItemType.CATEGORY, name = "Vyhľadávanie")
+        } + listOf(
+            MediaItem(
+                id = "__live__",
+                type = ItemType.CHANNEL,
+                name = "TV naživo",
+                image = "https://i.ibb.co/k6BZLrqF/live-stream.jpg"
+            ),
+            MediaItem(
+                id = "__search__",
+                type = ItemType.CATEGORY,
+                name = "Vyhľadávanie",
+                image = "https://i.ibb.co/CpzGP0g8/search.jpg"
+            )
+        )
         _browseState.value = BrowseState.Success(items, "JOJ Play")
     }
 
