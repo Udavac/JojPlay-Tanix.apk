@@ -25,6 +25,22 @@ class JojPlayRepository(private val token: String) {
         )
 
         private val SKIP_ROWS = setOf("Live TV", "Pokračovať v sledovaní", "Môj Zoznam")
+
+        // Mapa SMS ID → Tivio ID (pre getPlayUrl)
+        private val SMS_TO_TIVIO_ID = mapOf(
+            "33-joj"            to "LYyAwEjjqmj8kMY23Lqw",
+            "206-joj-plus"      to "60K9GwR6CLApIHVyNYOj",
+            "718-wau"           to "0D9v2CuujVAlLJJTyLWd",
+            "15441-joj-24"      to "7tl6We5FhLyCfZcmSG6F",
+            "15291-joj-sport"   to "OE8iUSCBeLn8CIb0mL57",
+            "15611-joj-sport-2" to "XA7YXR0HIuS4HGVgSZli",
+            "15509-joj-svet"    to "vSmKCe7UZp40PvCLXvtb",
+            "999-jojko"         to "oALPnvtbTB4yuM4cLpnF",
+            "1023-joj-cinema"   to "7oGizuVUXRJGckpoVGUB",
+            "1149-cs-film"      to "aYB0bZQo5X5BuuaXl43H",
+            "1187-cs-history"   to "UY5IgHcFriJV4Dh54RCS",
+            "717-cs-mystery"    to "cIM4bKpVNVziiCrs5LJk"
+        )
     }
 
     private val client = OkHttpClient()
@@ -86,7 +102,6 @@ class JojPlayRepository(private val token: String) {
                     val catId = path.substringAfterLast("/")
                     if (catId.isBlank() || catId in seen) continue
                     seen.add(catId)
-                    // Načítaj obrázok z prvého tile v riadku
                     val firstTile = item.optJSONObject("tiles")
                         ?.optJSONArray("items")
                         ?.takeIf { it.length() > 0 }
@@ -176,7 +191,6 @@ class JojPlayRepository(private val token: String) {
         val resp = get("$FIRESTORE/organizations/$ORG/tags/$seriesId")
         val fields = resp.getJSONObject("fields")
 
-        // Načítaj obrázok seriálu pre všetky sezóny
         val seriesImage = fields.optJSONObject("assets")?.let { extractImageFirestore(it) }
             ?: "https://assets.tivio.studio/videos/$seriesId/cover"
 
@@ -246,18 +260,25 @@ class JojPlayRepository(private val token: String) {
     // ── Play ──────────────────────────────────────────────────────────────────
 
     suspend fun getPlayUrl(id: String, documentType: String): PlayResult = withContext(Dispatchers.IO) {
+        // Ak ide o tvChannel, preložíme SMS ID → Tivio ID
+        val tivioId = if (documentType == "tvChannel") {
+            SMS_TO_TIVIO_ID[id] ?: return@withContext PlayResult(
+                null, errorMessage = "Kanál '$id' nenájdený v zozname"
+            )
+        } else {
+            id
+        }
+
         val payload = JSONObject().apply {
             put("data", JSONObject().apply {
-                put("id", id)
+                put("id", tivioId)
                 put("documentType", documentType)
                 put("capabilities", JSONArray().apply {
-                    // DASH ako primárny zdroj
                     put(JSONObject().apply {
                         put("codec", "h264")
                         put("protocol", "dash")
                         put("encryption", "none")
                     })
-                    // HLS ako záložný pre live TV
                     if (documentType == "tvChannel") {
                         put(JSONObject().apply {
                             put("codec", "h264")
@@ -282,7 +303,6 @@ class JojPlayRepository(private val token: String) {
         val url = result.optString("url").takeIf { it.isNotEmpty() }
             ?: return@withContext PlayResult(null, errorMessage = "URL nie je dostupná")
 
-        // Ak server vráti "internal" URL, ide o chránený stream
         if (url.startsWith("internal")) {
             return@withContext PlayResult(null, errorMessage = "Stream nie je dostupný (interný)")
         }
