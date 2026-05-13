@@ -34,23 +34,21 @@ data class MediaItem(
 // ── Screens s obrázkami ───────────────────────────────────────────────────────
 
 val SCREENS = linkedMapOf(
-    "Domov"         to "domov",
-    "Filmy"         to "filmy",
-    "Seriály"       to "serialy",
-    "Spravodajstvo" to "spravodajstvo",
-    "Šport"         to "sport",
-    "Deti"          to "deti",
-    "Live TV"       to "live"
+    "Domov"         to "screen-Lxye9UzYirbdU8gT6zIZ",
+    "Filmy"         to "screen-sDYvdxFDr6YuXBrJNq4Pf",
+    "Seriály"       to "screen-6u1OuNZpEZJ5mvFAr_kwA",
+    "Spravodajstvo" to "screen-uTwlSTUjxtlq9fJaT9L_2",
+    "Šport"         to "screen-jNBx-DFZSx6PazsFvlPol",
+    "Deti"          to "screen-vmptBEawEZaKP5VzokZeE"
 )
 
 val SCREEN_IMAGES = mapOf(
-    "domov"         to "https://i.ibb.co/wr8Prx78/home4.jpg",
-    "filmy"         to "https://i.ibb.co/LzwX5ynV/film.jpg",
-    "serialy"       to "https://i.ibb.co/5xrKDGC0/cinema.jpg",
-    "spravodajstvo" to "https://i.ibb.co/WNVBxfVX/news.jpg",
-    "sport"         to "https://i.ibb.co/jPwD9VPL/sport.jpg",
-    "deti"          to "https://i.ibb.co/Y4mbYyZg/kids2.jpg",
-    "live"          to "https://i.ibb.co/k6BZLrqF/live-stream.jpg"
+    "screen-Lxye9UzYirbdU8gT6zIZ" to "https://i.ibb.co/wr8Prx78/home4.jpg",
+    "screen-sDYvdxFDr6YuXBrJNq4Pf" to "https://i.ibb.co/LzwX5ynV/film.jpg",
+    "screen-6u1OuNZpEZJ5mvFAr_kwA" to "https://i.ibb.co/5xrKDGC0/cinema.jpg",
+    "screen-uTwlSTUjxtlq9fJaT9L_2" to "https://i.ibb.co/WNVBxfVX/news.jpg",
+    "screen-jNBx-DFZSx6PazsFvlPol" to "https://i.ibb.co/jPwD9VPL/sport.jpg",
+    "screen-vmptBEawEZaKP5VzokZeE" to "https://i.ibb.co/Y4mbYyZg/kids2.jpg"
 )
 
 // ── Live channels s EPG ID pre sms.cz ────────────────────────────────────────
