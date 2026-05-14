@@ -111,6 +111,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        lifecycleScope.launch {
+            vm.accountVisible.collectLatest { visible ->
+                if (visible) {
+                    vm.dismissAccount()
+                    startActivity(Intent(this@MainActivity, AccountActivity::class.java))
+                }
+            }
+        }
+
         vm.loadRoot()
     }
 
@@ -201,8 +210,7 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
                 else             -> badge.visibility = View.GONE
             }
 
-            // Image – pre CHANNEL použi image (nie preview) ak je dostupný,
-            // inak fallback na preview
+            // Image
             val imageUrl = when (item.type) {
                 ItemType.CHANNEL -> item.image ?: item.preview
                 else -> item.image
@@ -210,14 +218,14 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
             if (!imageUrl.isNullOrEmpty()) {
                 Glide.with(itemView)
                     .load(imageUrl)
-                    .fitCenter()                          // ← oprava: fitCenter namiesto centerCrop
+                    .fitCenter()
                     .placeholder(R.drawable.placeholder)
                     .into(image)
             } else {
                 image.setImageResource(R.drawable.placeholder)
             }
 
-            // Channel logo overlay – len pre kanály s preview (nie pre __live__)
+            // Channel logo overlay – len pre kanály s preview
             if (item.type == ItemType.CHANNEL && !item.logo.isNullOrEmpty() && !item.preview.isNullOrEmpty()) {
                 logo.visibility = View.VISIBLE
                 Glide.with(itemView).load(item.logo).fitCenter().into(logo)
@@ -225,17 +233,14 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
                 logo.visibility = View.GONE
             }
 
-            // Click + TV remote DPAD_CENTER / ENTER
             itemView.setOnClickListener { onClick(item) }
             itemView.setOnKeyListener { _, keyCode, event ->
                 if (event.action == KeyEvent.ACTION_DOWN &&
                     (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    onClick(item)
-                    true
+                    onClick(item); true
                 } else false
             }
 
-            // TV focus highlight
             itemView.isFocusable = true
             itemView.isFocusableInTouchMode = true
             itemView.setOnFocusChangeListener { v, hasFocus ->
