@@ -39,6 +39,9 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
     private val _searchVisible = MutableStateFlow(false)
     val searchVisible: StateFlow<Boolean> = _searchVisible
 
+    private val _accountVisible = MutableStateFlow(false)
+    val accountVisible: StateFlow<Boolean> = _accountVisible
+
     private data class StackEntry(val title: String, val loader: suspend () -> List<MediaItem>)
     private val backStack = mutableListOf<StackEntry>()
 
@@ -83,6 +86,12 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
                 type = ItemType.CATEGORY,
                 name = "Vyhľadávanie",
                 image = "https://i.ibb.co/CpzGP0g8/search.jpg"
+            ),
+            MediaItem(
+                id = "__account__",
+                type = ItemType.CATEGORY,
+                name = "Môj účet",
+                image = "https://i.ibb.co/CpzGP0g8/search.jpg" // zmeň na vlastný obrázok účtu
             )
         )
         _browseState.value = BrowseState.Success(items, "JOJ Play")
@@ -90,8 +99,9 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
 
     fun onItemClick(item: MediaItem) {
         when {
-            item.id == "__live__" -> pushAndLoad("TV naživo") { LIVE_CHANNELS }
-            item.id == "__search__" -> _searchVisible.value = true
+            item.id == "__live__"    -> pushAndLoad("TV naživo") { LIVE_CHANNELS }
+            item.id == "__search__"  -> _searchVisible.value = true
+            item.id == "__account__" -> _accountVisible.value = true
             item.type == ItemType.CATEGORY && SCREENS.containsValue(item.id) -> {
                 val name = SCREENS.entries.find { it.value == item.id }?.key ?: item.name
                 pushAndLoad(name) { repo().getItemsInScreen(item.id) }
@@ -144,7 +154,8 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
         return true
     }
 
-    fun dismissSearch() { _searchVisible.value = false }
+    fun dismissSearch()  { _searchVisible.value = false }
+    fun dismissAccount() { _accountVisible.value = false }
 
     fun submitSearch(query: String) {
         _searchVisible.value = false
