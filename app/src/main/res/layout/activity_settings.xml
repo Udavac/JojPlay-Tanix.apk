@@ -67,7 +67,20 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textSize="18sp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="12dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusDown="@id/checkShowPassword"/>
+
+    <CheckBox
+        android:id="@+id/checkShowPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Zobraziť heslo"
+        android:textColor="#AAAAAA"
+        android:textSize="14sp"
+        android:buttonTint="#E30613"
+        android:layout_marginBottom="32dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:nextFocusDown="@id/btnSave"/>
@@ -100,7 +113,5 @@
             android:backgroundTint="#E30613"
             android:focusable="true"
             android:nextFocusLeft="@id/btnCancel"/>
-
     </LinearLayout>
-
 </LinearLayout>
