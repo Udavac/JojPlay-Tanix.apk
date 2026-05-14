@@ -91,7 +91,7 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
                 id = "__account__",
                 type = ItemType.CATEGORY,
                 name = "Môj účet",
-                image = "https://i.ibb.co/CpzGP0g8/search.jpg" // zmeň na vlastný obrázok účtu
+                image = "https://i.ibb.co/LDwqNJDh/account.jpg"
             )
         )
         _browseState.value = BrowseState.Success(items, "JOJ Play")
