@@ -79,19 +79,19 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
                 id = "__live__",
                 type = ItemType.CHANNEL,
                 name = "TV naživo",
-                image = "https://i.ibb.co/k6BZLrqF/live-stream.jpg"
+                image = "https://github.com/Udavac/Obrazky/blob/main/live%20stream.jpg"
             ),
             MediaItem(
                 id = "__search__",
                 type = ItemType.CATEGORY,
                 name = "Vyhľadávanie",
-                image = "https://i.ibb.co/CpzGP0g8/search.jpg"
+                image = "https://github.com/Udavac/Obrazky/blob/main/search.jpg"
             ),
             MediaItem(
                 id = "__account__",
                 type = ItemType.CATEGORY,
                 name = "Môj účet",
-                image = "https://i.ibb.co/LDwqNJDh/account.jpg"
+                image = "https://github.com/Udavac/Obrazky/blob/main/account.jpg"
             )
         )
         _browseState.value = BrowseState.Success(items, "JOJ Play")
