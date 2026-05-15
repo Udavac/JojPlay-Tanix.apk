@@ -43,12 +43,12 @@ val SCREENS = linkedMapOf(
 )
 
 val SCREEN_IMAGES = mapOf(
-    "screen-Lxye9UzYirbdU8gT6zIZ" to "https://i.ibb.co/wr8Prx78/home4.jpg",
-    "screen-sDYvdxFDr6YuXBrJNq4Pf" to "https://i.ibb.co/LzwX5ynV/film.jpg",
-    "screen-6u1OuNZpEZJ5mvFAr_kwA" to "https://i.ibb.co/5xrKDGC0/cinema.jpg",
-    "screen-uTwlSTUjxtlq9fJaT9L_2" to "https://i.ibb.co/WNVBxfVX/news.jpg",
-    "screen-jNBx-DFZSx6PazsFvlPol" to "https://i.ibb.co/jPwD9VPL/sport.jpg",
-    "screen-vmptBEawEZaKP5VzokZeE" to "https://i.ibb.co/Y4mbYyZg/kids2.jpg"
+    "screen-Lxye9UzYirbdU8gT6zIZ" to "https://github.com/Udavac/Obrazky/blob/main/home4.jpg",
+    "screen-sDYvdxFDr6YuXBrJNq4Pf" to "https://github.com/Udavac/Obrazky/blob/main/film.jpg",
+    "screen-6u1OuNZpEZJ5mvFAr_kwA" to "https://github.com/Udavac/Obrazky/blob/main/cinema.jpg",
+    "screen-uTwlSTUjxtlq9fJaT9L_2" to "https://github.com/Udavac/Obrazky/blob/main/news.jpg",
+    "screen-jNBx-DFZSx6PazsFvlPol" to "https://github.com/Udavac/Obrazky/blob/main/sport.jpg",
+    "screen-vmptBEawEZaKP5VzokZeE" to "https://github.com/Udavac/Obrazky/blob/main/kids2.jpg"
 )
 
 // ── Live channels s EPG ID pre sms.cz ────────────────────────────────────────
