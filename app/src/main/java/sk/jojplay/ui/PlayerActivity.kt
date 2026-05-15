@@ -40,7 +40,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private var player: ExoPlayer? = null
     private val hideHandler = Handler(Looper.getMainLooper())
-    private val hideRunnable = Runnable { hideAll() }
+    private val hideRunnable = Runnable { playerView.hideController() }
     private val epgHandler = Handler(Looper.getMainLooper())
     private var epgRefreshRunnable: Runnable? = null
     private val client = OkHttpClient()
@@ -81,7 +81,8 @@ class PlayerActivity : AppCompatActivity() {
         val channelName = intent.getStringExtra("channelName") ?: ""
 
         initPlayer(url, isDash)
-        hideAll()
+
+        epgContainer.visibility = View.GONE
 
         if (channelId != null) {
             val smsId = SMS_CHANNEL_MAP[channelId]
@@ -110,12 +111,13 @@ class PlayerActivity : AppCompatActivity() {
                 val cal = Calendar.getInstance()
                 val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-                // Parsuj program — hľadaj čas a názov
-                val regex = Regex("""(\d{2}:\d{2})[^<]*<[^>]+>([^<]{3,80})""")
+                // SMS používa formát "12.30" (bodka) aj "12:30" (dvojbodka)
+                // Názov programu je v <a href="...">Názov programu</a>
+                val regex = Regex("""(\d{2}[.:]\d{2})\s*[\r\n]+\s*<a[^>]+>([^<]{2,100})</a>""")
                 val allPrograms = mutableListOf<Pair<Long, String>>()
 
                 for (match in regex.findAll(html)) {
-                    val timeStr = match.groupValues[1]
+                    val timeStr = match.groupValues[1].replace(".", ":")  // normalizuj bodku na dvojbodku
                     val title = match.groupValues[2]
                         .replace("&amp;", "&")
                         .replace("&nbsp;", " ")
@@ -133,7 +135,6 @@ class PlayerActivity : AppCompatActivity() {
                     }
                 }
 
-                // Nájdi aktuálny program
                 var currentTitle = channelName
                 var currentStart = ""
                 var nextStart = ""
@@ -158,19 +159,17 @@ class PlayerActivity : AppCompatActivity() {
                     ((elapsed.toFloat() / total) * 100).toInt().coerceIn(0, 100)
                 } else 0
 
-                if (currentTitle.isNotEmpty()) {
-                    withContext(Dispatchers.Main) {
-                        epgTitle.text = currentTitle
-                        epgTime.text = if (nextStart.isNotEmpty()) "$currentStart – $nextStart" else currentStart
-                        epgBar.progress = progress
-                        epgContainer.visibility = View.VISIBLE  // ← OPRAVA: zobraz EPG
-                    }
-
-                    // Obnov o 5 minút
-                    val refresh = Runnable { loadEpgFromSms(smsId, channelName) }
-                    epgRefreshRunnable = refresh
-                    epgHandler.postDelayed(refresh, 5 * 60 * 1000L)
+                withContext(Dispatchers.Main) {
+                    epgTitle.text = currentTitle
+                    epgTime.text = if (nextStart.isNotEmpty()) "$currentStart – $nextStart" else currentStart
+                    epgBar.progress = progress
+                    epgContainer.visibility = View.VISIBLE
                 }
+
+                // Obnov o 5 minút
+                val refresh = Runnable { loadEpgFromSms(smsId, channelName) }
+                epgRefreshRunnable = refresh
+                epgHandler.postDelayed(refresh, 5 * 60 * 1000L)
 
             } catch (e: Exception) {
                 // Tiché zlyhanie
@@ -180,18 +179,12 @@ class PlayerActivity : AppCompatActivity() {
 
     // ── Player controls ───────────────────────────────────────────────────────
 
-    private fun hideAll() {
-        playerView.hideController()
-        epgContainer.visibility = View.GONE
-    }
-
     private fun scheduleHide() {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, 4000)
     }
 
-    private fun showInfo() {
-        epgContainer.visibility = View.VISIBLE
+    private fun showController() {
         playerView.showController()
         scheduleHide()
     }
@@ -237,14 +230,18 @@ class PlayerActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
-                if (epgContainer.visibility == View.VISIBLE) hideAll() else showInfo()
+                showController()
                 true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
                 player?.let { if (it.isPlaying) it.pause() else it.play() }
                 true
             }
-            KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> { finish(); true }
+            KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
+                epgContainer.visibility = View.GONE
+                finish()
+                true
+            }
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
                 player?.seekTo((player!!.currentPosition + 10_000).coerceAtMost(player!!.duration))
                 true
