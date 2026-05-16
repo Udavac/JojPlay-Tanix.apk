@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         adapter = MediaAdapter { item -> vm.onItemClick(item) }
         recycler.adapter = adapter
 
-        if (!vm.isConfigured()) openSettings()
+       
 
         lifecycleScope.launch {
             vm.browseState.collectLatest { state ->
