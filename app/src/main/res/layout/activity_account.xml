@@ -29,7 +29,7 @@
         android:orientation="horizontal"
         android:layout_marginBottom="20dp">
         <TextView
-            android:layout_width="120dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Email:"
             android:textColor="#AAAAAA"
@@ -50,7 +50,7 @@
         android:orientation="horizontal"
         android:layout_marginBottom="20dp">
         <TextView
-            android:layout_width="120dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Stav:"
             android:textColor="#AAAAAA"
@@ -71,7 +71,7 @@
         android:orientation="horizontal"
         android:layout_marginBottom="48dp">
         <TextView
-            android:layout_width="120dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Token:"
             android:textColor="#AAAAAA"
@@ -84,13 +84,12 @@
             android:textSize="16sp"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnAccountClose"
-        android:layout_width="200dp"
-        android:layout_height="56dp"
-        android:text="Zavrieť"
-        android:textSize="16sp"
-        android:backgroundTint="#333333"
-        android:focusable="true"/>
+    <!-- Info -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pre návrat stlač tlačidlo Späť"
+        android:textColor="#666666"
+        android:textSize="13sp"/>
 
 </LinearLayout>
