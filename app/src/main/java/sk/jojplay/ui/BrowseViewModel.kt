@@ -42,6 +42,9 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
     private val _accountVisible = MutableStateFlow(false)
     val accountVisible: StateFlow<Boolean> = _accountVisible
 
+    private val _settingsVisible = MutableStateFlow(false)
+    val settingsVisible: StateFlow<Boolean> = _settingsVisible
+
     private data class StackEntry(val title: String, val loader: suspend () -> List<MediaItem>)
     private val backStack = mutableListOf<StackEntry>()
 
@@ -92,6 +95,12 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
                 type = ItemType.CATEGORY,
                 name = "Môj účet",
                 image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/images/ucet.jpg"
+            ),
+            MediaItem(
+                id = "__settings__",
+                type = ItemType.CATEGORY,
+                name = "Prihlásenie",
+                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/images/prihlasenie.jpg"
             )
         )
         _browseState.value = BrowseState.Success(items, "JOJ Play")
@@ -99,9 +108,10 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
 
     fun onItemClick(item: MediaItem) {
         when {
-            item.id == "__live__"    -> pushAndLoad("TV naživo") { LIVE_CHANNELS }
-            item.id == "__search__"  -> _searchVisible.value = true
-            item.id == "__account__" -> _accountVisible.value = true
+            item.id == "__live__"      -> pushAndLoad("TV naživo") { LIVE_CHANNELS }
+            item.id == "__search__"    -> _searchVisible.value = true
+            item.id == "__account__"   -> _accountVisible.value = true
+            item.id == "__settings__"  -> _settingsVisible.value = true
             item.type == ItemType.CATEGORY && SCREENS.containsValue(item.id) -> {
                 val name = SCREENS.entries.find { it.value == item.id }?.key ?: item.name
                 pushAndLoad(name) { repo().getItemsInScreen(item.id) }
@@ -154,8 +164,9 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
         return true
     }
 
-    fun dismissSearch()  { _searchVisible.value = false }
-    fun dismissAccount() { _accountVisible.value = false }
+    fun dismissSearch()   { _searchVisible.value = false }
+    fun dismissAccount()  { _accountVisible.value = false }
+    fun dismissSettings() { _settingsVisible.value = false }
 
     fun submitSearch(query: String) {
         _searchVisible.value = false
