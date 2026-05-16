@@ -2,7 +2,6 @@ package sk.jojplay.ui
 
 import android.os.Bundle
 import android.view.KeyEvent
-import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import sk.jojplay.R
@@ -21,7 +20,6 @@ class AccountActivity : AppCompatActivity() {
         val tvEmail  = findViewById<TextView>(R.id.tvAccountEmail)
         val tvStatus = findViewById<TextView>(R.id.tvAccountStatus)
         val tvExpiry = findViewById<TextView>(R.id.tvAccountExpiry)
-        val btnClose = findViewById<Button>(R.id.btnAccountClose)
 
         // Email
         tvEmail.text = tokenManager.email.ifBlank { "Neprihlásený" }
@@ -40,21 +38,12 @@ class AccountActivity : AppCompatActivity() {
             tvStatus.setTextColor(0xFFE30613.toInt())
             tvExpiry.text = "Reštartuj apku pre obnovenie"
         }
-
-        btnClose.setOnClickListener { finish() }
-        btnClose.setOnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN &&
-                (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER)) {
-                finish(); true
-            } else false
-        }
-
-        btnClose.requestFocus()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE) {
-            finish(); return true
+            finish()
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }
