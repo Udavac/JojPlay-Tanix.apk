@@ -45,12 +45,6 @@ class MainActivity : AppCompatActivity() {
         adapter = MediaAdapter { item -> vm.onItemClick(item) }
         recycler.adapter = adapter
 
-        val btnSettings = findViewById<ImageButton>(R.id.btnSettings)
-        btnSettings.setOnClickListener { openSettings() }
-        btnSettings.setOnFocusChangeListener { v, hasFocus ->
-            v.alpha = if (hasFocus) 1f else 0.7f
-        }
-
         if (!vm.isConfigured()) openSettings()
 
         lifecycleScope.launch {
@@ -116,6 +110,15 @@ class MainActivity : AppCompatActivity() {
                 if (visible) {
                     vm.dismissAccount()
                     startActivity(Intent(this@MainActivity, AccountActivity::class.java))
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            vm.settingsVisible.collectLatest { visible ->
+                if (visible) {
+                    vm.dismissSettings()
+                    openSettings()
                 }
             }
         }
