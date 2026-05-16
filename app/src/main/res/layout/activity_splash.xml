@@ -13,18 +13,3 @@
         android:scaleType="fitCenter"
         android:layout_marginBottom="24dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="JOJ Play"
-        android:textColor="#FFFFFF"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <View
-        android:layout_width="80dp"
-        android:layout_height="3dp"
-        android:background="#E30613"/>
-
-</LinearLayout>
