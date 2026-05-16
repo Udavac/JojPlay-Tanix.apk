@@ -45,7 +45,6 @@ class PlayerActivity : AppCompatActivity() {
     private var epgRefreshRunnable: Runnable? = null
     private val client = OkHttpClient()
 
-    // Mapa SMS channel ID -> sms.cz názov stanice
     private val SMS_CHANNEL_MAP = mapOf(
         "33-joj"            to "JOJ",
         "206-joj-plus"      to "JOJ+Plus",
@@ -81,7 +80,6 @@ class PlayerActivity : AppCompatActivity() {
         val channelName = intent.getStringExtra("channelName") ?: ""
 
         initPlayer(url, isDash)
-
         epgContainer.visibility = View.GONE
 
         if (channelId != null) {
@@ -111,13 +109,14 @@ class PlayerActivity : AppCompatActivity() {
                 val cal = Calendar.getInstance()
                 val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-                // SMS používa formát "12.30" (bodka) aj "12:30" (dvojbodka)
-                // Názov programu je v <a href="...">Názov programu</a>
-                val regex = Regex("""(\d{2}[.:]\d{2})\s*[\r\n]+\s*<a[^>]+>([^<]{2,100})</a>""")
+                // Správny regex podľa skutočnej štruktúry SMS HTML:
+                // <span style='color: #9E913B'>05.30</span>
+                // <a class='nazev' href='...'>Názov programu</a>
+                val regex = Regex("""<span[^>]*>(\d{2}\.\d{2})</span>.*?<a class='nazev'[^>]*>\s*<div[^>]*>\s*([^<]{2,100}?)\s*<div""", RegexOption.DOT_MATCHES_ALL)
                 val allPrograms = mutableListOf<Pair<Long, String>>()
 
                 for (match in regex.findAll(html)) {
-                    val timeStr = match.groupValues[1].replace(".", ":")  // normalizuj bodku na dvojbodku
+                    val timeStr = match.groupValues[1].replace(".", ":")
                     val title = match.groupValues[2]
                         .replace("&amp;", "&")
                         .replace("&nbsp;", " ")
@@ -230,25 +229,20 @@ class PlayerActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
-                showController()
-                true
+                showController(); true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
-                player?.let { if (it.isPlaying) it.pause() else it.play() }
-                true
+                player?.let { if (it.isPlaying) it.pause() else it.play() }; true
             }
             KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
                 epgContainer.visibility = View.GONE
-                finish()
-                true
+                finish(); true
             }
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                player?.seekTo((player!!.currentPosition + 10_000).coerceAtMost(player!!.duration))
-                true
+                player?.seekTo((player!!.currentPosition + 10_000).coerceAtMost(player!!.duration)); true
             }
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-                player?.seekTo((player!!.currentPosition - 10_000).coerceAtLeast(0))
-                true
+                player?.seekTo((player!!.currentPosition - 10_000).coerceAtLeast(0)); true
             }
             else -> super.onKeyDown(keyCode, event)
         }
