@@ -82,25 +82,25 @@ class BrowseViewModel(application: Application) : AndroidViewModel(application) 
                 id = "__live__",
                 type = ItemType.CHANNEL,
                 name = "TV naživo",
-                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/images/live stream.jpg"
+                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/live stream.jpg"
             ),
             MediaItem(
                 id = "__search__",
                 type = ItemType.CATEGORY,
                 name = "Vyhľadávanie",
-                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/images/search.jpg"
+                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/search.jpg"
             ),
             MediaItem(
                 id = "__account__",
                 type = ItemType.CATEGORY,
                 name = "Môj účet",
-                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/images/ucet.jpg"
+                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/.jpg"
             ),
             MediaItem(
                 id = "__settings__",
                 type = ItemType.CATEGORY,
                 name = "Prihlásenie",
-                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/images/prihlasenie.jpg"
+                image = "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/prihlasenie.jpg"
             )
         )
         _browseState.value = BrowseState.Success(items, "JOJ Play")
