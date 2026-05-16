@@ -17,47 +17,54 @@
         android:indeterminateTint="#E30613"
         android:visibility="gone"/>
 
+    <!-- EPG panel – väčší, tmavé pozadie, dole -->
     <LinearLayout
         android:id="@+id/epgContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="vertical"
-        android:background="#BB000000"
-        android:padding="16dp"
+        android:background="#CC000000"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:visibility="gone">
 
+        <!-- Názov programu – väčší text -->
         <TextView
             android:id="@+id/epgTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"/>
 
+        <!-- Čas + progress bar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="6dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/epgTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#CCCCCC"
-                android:textSize="13sp"
-                android:layout_marginEnd="12dp"/>
+                android:textSize="16sp"
+                android:layout_marginEnd="16dp"/>
 
+            <!-- Červená časová os -->
             <ProgressBar
                 android:id="@+id/epgBar"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
-                android:layout_height="6dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:progressTint="#E30613"
-                android:progressBackgroundTint="#555555"
+                android:progressBackgroundTint="#444444"
                 android:max="100"/>
 
         </LinearLayout>
