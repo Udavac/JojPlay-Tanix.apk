@@ -43,12 +43,12 @@ val SCREENS = linkedMapOf(
 )
 
 val SCREEN_IMAGES = mapOf(
-    "screen-Lxye9UzYirbdU8gT6zIZ" to "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/domov.jpg",
-    "screen-sDYvdxFDr6YuXBrJNq4Pf" to "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/film.jpg",
-    "screen-6u1OuNZpEZJ5mvFAr_kwA" to "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/serial.jpg",
-    "screen-uTwlSTUjxtlq9fJaT9L_2" to "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/news.jpg",
-    "screen-jNBx-DFZSx6PazsFvlPol" to "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/sport.jpg",
-    "screen-vmptBEawEZaKP5VzokZeE" to "https://github.com/Udavac/JojPlay-Tanix.apk/raw/main/app/src/main/images/deti.jpg"
+    "screen-Lxye9UzYirbdU8gT6zIZ" to "https://raw.githubusercontent.com/Udavac/JoJ_Play-Obrazky/main/domov.jpg",
+    "screen-sDYvdxFDr6YuXBrJNq4Pf" to "https://raw.githubusercontent.com/Udavac/JoJ_Play-Obrazky/main/film.jpg",
+    "screen-6u1OuNZpEZJ5mvFAr_kwA" to "https://raw.githubusercontent.com/Udavac/JoJ_Play-Obrazky/main/serial.jpg",
+    "screen-uTwlSTUjxtlq9fJaT9L_2" to "https://raw.githubusercontent.com/Udavac/JoJ_Play-Obrazky/main/news.jpg",
+    "screen-jNBx-DFZSx6PazsFvlPol" to "https://raw.githubusercontent.com/Udavac/JoJ_Play-Obrazky/main/sport.jpg",
+    "screen-vmptBEawEZaKP5VzokZeE" to "https://raw.githubusercontent.com/Udavac/JoJ_Play-Obrazky/main/deti.jpg"
 )
 
 // ── Live channels s EPG ID pre sms.cz ────────────────────────────────────────
