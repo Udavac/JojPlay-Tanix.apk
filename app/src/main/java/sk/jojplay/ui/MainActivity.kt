@@ -193,9 +193,12 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
     override fun getItemCount() = items.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (items[position].type) {
-            ItemType.VIDEO, ItemType.SERIES, ItemType.SEASON -> TYPE_THUMB
-            else -> TYPE_ICON
+        val item = items[position]
+        return when {
+            // Titulná stránka – CATEGORY bez preview (ikony)
+            item.type == ItemType.CATEGORY && item.preview == null -> TYPE_ICON
+            // Všetko ostatné – centerCrop (TV naživo, videá, seriály, podkategórie)
+            else -> TYPE_THUMB
         }
     }
 
