@@ -45,8 +45,6 @@ class MainActivity : AppCompatActivity() {
         adapter = MediaAdapter { item -> vm.onItemClick(item) }
         recycler.adapter = adapter
 
-       
-
         lifecycleScope.launch {
             vm.browseState.collectLatest { state ->
                 when (state) {
@@ -180,6 +178,12 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
 
     private val items = mutableListOf<MediaItem>()
 
+    // Typy viewov
+    companion object {
+        const val TYPE_ICON = 0      // hlavná stránka – fitCenter s paddingom
+        const val TYPE_THUMB = 1     // kategórie – centerCrop bez paddingu
+    }
+
     fun submitList(newItems: List<MediaItem>) {
         items.clear()
         items.addAll(newItems)
@@ -188,8 +192,16 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
 
     override fun getItemCount() = items.size
 
+    override fun getItemViewType(position: Int): Int {
+        return when (items[position].type) {
+            ItemType.VIDEO, ItemType.SERIES, ItemType.SEASON -> TYPE_THUMB
+            else -> TYPE_ICON
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_media, parent, false)
+        val layoutId = if (viewType == TYPE_THUMB) R.layout.item_media_category else R.layout.item_media
+        val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
         return VH(view)
     }
 
@@ -221,14 +233,13 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
             if (!imageUrl.isNullOrEmpty()) {
                 Glide.with(itemView)
                     .load(imageUrl)
-                    .fitCenter()
                     .placeholder(R.drawable.placeholder)
                     .into(image)
             } else {
                 image.setImageResource(R.drawable.placeholder)
             }
 
-            // Channel logo overlay – len pre kanály s preview
+            // Channel logo overlay
             if (item.type == ItemType.CHANNEL && !item.logo.isNullOrEmpty() && !item.preview.isNullOrEmpty()) {
                 logo.visibility = View.VISIBLE
                 Glide.with(itemView).load(item.logo).fitCenter().into(logo)
