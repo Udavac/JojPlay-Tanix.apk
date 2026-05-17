@@ -48,6 +48,10 @@ class PlayerActivity : AppCompatActivity() {
     // Časové pásmo pre SMS server (CZ/SK)
     private val TZ = TimeZone.getTimeZone("Europe/Bratislava")
 
+    // Auto-skrytie EPG panelu
+    private val epgHideHandler = Handler(Looper.getMainLooper())
+    private val epgHideRunnable = Runnable { epgContainer.visibility = View.GONE }
+
     private val SMS_CHANNEL_MAP = mapOf(
         "33-joj"            to "JOJ",
         "206-joj-plus"      to "JOJ+Plus",
@@ -197,6 +201,8 @@ class PlayerActivity : AppCompatActivity() {
                     epgTime.text = if (nextStart.isNotEmpty()) "$currentStart – $nextStart" else currentStart
                     epgBar.progress = progress
                     epgContainer.visibility = View.VISIBLE
+                    epgHideHandler.removeCallbacks(epgHideRunnable)
+                    epgHideHandler.postDelayed(epgHideRunnable, 5000L)
                 }
 
                 // Obnov o 5 minút
@@ -257,12 +263,16 @@ class PlayerActivity : AppCompatActivity() {
         super.onDestroy()
         hideHandler.removeCallbacks(hideRunnable)
         epgRefreshRunnable?.let { epgHandler.removeCallbacks(it) }
+        epgHideHandler.removeCallbacks(epgHideRunnable)
         player?.release(); player = null
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
+                epgContainer.visibility = View.VISIBLE
+                epgHideHandler.removeCallbacks(epgHideRunnable)
+                epgHideHandler.postDelayed(epgHideRunnable, 5000L)
                 showController(); true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
