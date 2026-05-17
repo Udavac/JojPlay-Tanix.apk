@@ -69,7 +69,7 @@ val LIVE_CHANNELS = listOf(
     MediaItem(
         id = "718-wau", type = ItemType.CHANNEL, name = "JOJ Krimi",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/103/categories/screenshot/1.jpg",
-        logo = "https://www.lyngsat.com/logo/tv/jj/joj-krimi-sk.png",
+        logo = "https://raw.githubusercontent.com/Udavac/IPTV_Logo/main/joj%20krimi.png",
         description = "WAU"
     ),
     MediaItem(
@@ -87,13 +87,13 @@ val LIVE_CHANNELS = listOf(
     MediaItem(
         id = "15611-joj-sport-2", type = ItemType.CHANNEL, name = "JOJ Šport 2",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/118/categories/screenshot/1.jpg",
-        logo = "https://www.lyngsat.com/logo/tv/jj/joj-sport-2-sk.png",
+        logo = "https://raw.githubusercontent.com/Udavac/IPTV_Logo/main/joj%20sport%202.png",
         description = "JOJ+%8Aport+2"
     ),
     MediaItem(
         id = "15509-joj-svet", type = ItemType.CHANNEL, name = "JOJ Svet",
         preview = "https://cnt.iptv.joj.sk/contentserver/contents/114/categories/screenshot/1.jpg",
-        logo = "https://www.lyngsat.com/logo/tv/jj/joj-svet-sk.png",
+        logo = "https://raw.githubusercontent.com/Udavac/IPTV_Logo/main/joj%20svet.png",
         description = "JOJ+Svet"
     ),
     MediaItem(
