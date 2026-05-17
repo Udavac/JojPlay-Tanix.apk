@@ -45,6 +45,9 @@ class PlayerActivity : AppCompatActivity() {
     private var epgRefreshRunnable: Runnable? = null
     private val client = OkHttpClient()
 
+    // Časové pásmo pre SMS server (CZ/SK)
+    private val TZ = TimeZone.getTimeZone("Europe/Bratislava")
+
     private val SMS_CHANNEL_MAP = mapOf(
         "33-joj"            to "JOJ",
         "206-joj-plus"      to "JOJ+Plus",
@@ -95,7 +98,11 @@ class PlayerActivity : AppCompatActivity() {
     private fun loadEpgFromSms(smsId: String, channelName: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                // Dátum v časovom pásme Bratislava
+                val dateSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
+                    timeZone = TZ
+                }
+                val date = dateSdf.format(Date())
                 val url = "https://m.tv.sms.cz/index.php?den=$date&stanice=$smsId&cas=0"
 
                 val req = Request.Builder()
@@ -103,32 +110,34 @@ class PlayerActivity : AppCompatActivity() {
                     .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36")
                     .build()
 
-                // ← OPRAVA: čítaj odpoveď ako windows-1250 (SMS stránka používa toto kódovanie)
+                // Čítaj ako windows-1250
                 val html = client.newCall(req).execute().use { resp ->
                     val bytes = resp.body?.bytes() ?: return@use ""
-                    String(bytes, Charsets.ISO_8859_1)
-                        .replace("windows-1250", "UTF-8") // len pre istotu
-                        .let { raw ->
-                            // Prekonvertuj windows-1250 → UTF-8
-                            String(raw.toByteArray(Charsets.ISO_8859_1), charset("windows-1250"))
-                        }
+                    String(bytes, charset("windows-1250"))
                 }
 
                 val now = System.currentTimeMillis()
-                val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-                // Správny regex podľa SMS HTML štruktúry
+                // Čas zobrazenia v Bratislave
+                val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
+                    timeZone = TZ
+                }
+
+                // Regex podľa SMS HTML štruktúry
                 val regex = Regex(
                     """<span[^>]*>(\d{2}\.\d{2})</span>.*?<a class='nazev'[^>]*>\s*<div[^>]*>\s*([^<]{2,100}?)\s*<div""",
                     RegexOption.DOT_MATCHES_ALL
                 )
+
                 val allPrograms = mutableListOf<Pair<Long, String>>()
 
-                // Použijeme dnešný dátum ako základ pre kalendár
-                val baseCalendar = Calendar.getInstance()
-                val todayYear  = baseCalendar.get(Calendar.YEAR)
-                val todayMonth = baseCalendar.get(Calendar.MONTH)
-                val todayDay   = baseCalendar.get(Calendar.DAY_OF_MONTH)
+                // Základ pre dnešný dátum v časovom pásme Bratislava
+                val baseCal = Calendar.getInstance(TZ)
+                val todayYear  = baseCal.get(Calendar.YEAR)
+                val todayMonth = baseCal.get(Calendar.MONTH)
+                val todayDay   = baseCal.get(Calendar.DAY_OF_MONTH)
+
+                var prevHour = -1
 
                 for (match in regex.findAll(html)) {
                     val timeStr = match.groupValues[1].replace(".", ":")
@@ -145,19 +154,16 @@ class PlayerActivity : AppCompatActivity() {
                         val hour = parts[0].toInt()
                         val min  = parts[1].toInt()
 
-                        val cal = Calendar.getInstance()
+                        val cal = Calendar.getInstance(TZ)
                         cal.set(todayYear, todayMonth, todayDay, hour, min, 0)
                         cal.set(Calendar.MILLISECOND, 0)
 
-                        // Programy po polnoci (00:00 - 05:00) patria k nasledujúcemu dňu
-                        if (hour < 5 && allPrograms.isNotEmpty()) {
-                            val lastTime = allPrograms.last().first
-                            val lastHour = Calendar.getInstance().apply { timeInMillis = lastTime }.get(Calendar.HOUR_OF_DAY)
-                            if (lastHour >= 20) {
-                                cal.add(Calendar.DAY_OF_MONTH, 1)
-                            }
+                        // Programy po polnoci (hodina skočí z 23 na 0-5)
+                        if (prevHour >= 20 && hour < 6) {
+                            cal.add(Calendar.DAY_OF_MONTH, 1)
                         }
 
+                        prevHour = hour
                         allPrograms.add(Pair(cal.timeInMillis, title))
                     }
                 }
