@@ -103,17 +103,32 @@ class PlayerActivity : AppCompatActivity() {
                     .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36")
                     .build()
 
-                val html = client.newCall(req).execute().use { it.body?.string() ?: "" }
+                // ← OPRAVA: čítaj odpoveď ako windows-1250 (SMS stránka používa toto kódovanie)
+                val html = client.newCall(req).execute().use { resp ->
+                    val bytes = resp.body?.bytes() ?: return@use ""
+                    String(bytes, Charsets.ISO_8859_1)
+                        .replace("windows-1250", "UTF-8") // len pre istotu
+                        .let { raw ->
+                            // Prekonvertuj windows-1250 → UTF-8
+                            String(raw.toByteArray(Charsets.ISO_8859_1), charset("windows-1250"))
+                        }
+                }
 
                 val now = System.currentTimeMillis()
-                val cal = Calendar.getInstance()
                 val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-                // Správny regex podľa skutočnej štruktúry SMS HTML:
-                // <span style='color: #9E913B'>05.30</span>
-                // <a class='nazev' href='...'>Názov programu</a>
-                val regex = Regex("""<span[^>]*>(\d{2}\.\d{2})</span>.*?<a class='nazev'[^>]*>\s*<div[^>]*>\s*([^<]{2,100}?)\s*<div""", RegexOption.DOT_MATCHES_ALL)
+                // Správny regex podľa SMS HTML štruktúry
+                val regex = Regex(
+                    """<span[^>]*>(\d{2}\.\d{2})</span>.*?<a class='nazev'[^>]*>\s*<div[^>]*>\s*([^<]{2,100}?)\s*<div""",
+                    RegexOption.DOT_MATCHES_ALL
+                )
                 val allPrograms = mutableListOf<Pair<Long, String>>()
+
+                // Použijeme dnešný dátum ako základ pre kalendár
+                val baseCalendar = Calendar.getInstance()
+                val todayYear  = baseCalendar.get(Calendar.YEAR)
+                val todayMonth = baseCalendar.get(Calendar.MONTH)
+                val todayDay   = baseCalendar.get(Calendar.DAY_OF_MONTH)
 
                 for (match in regex.findAll(html)) {
                     val timeStr = match.groupValues[1].replace(".", ":")
@@ -127,9 +142,22 @@ class PlayerActivity : AppCompatActivity() {
 
                     runCatching {
                         val parts = timeStr.split(":")
-                        cal.set(Calendar.HOUR_OF_DAY, parts[0].toInt())
-                        cal.set(Calendar.MINUTE, parts[1].toInt())
-                        cal.set(Calendar.SECOND, 0)
+                        val hour = parts[0].toInt()
+                        val min  = parts[1].toInt()
+
+                        val cal = Calendar.getInstance()
+                        cal.set(todayYear, todayMonth, todayDay, hour, min, 0)
+                        cal.set(Calendar.MILLISECOND, 0)
+
+                        // Programy po polnoci (00:00 - 05:00) patria k nasledujúcemu dňu
+                        if (hour < 5 && allPrograms.isNotEmpty()) {
+                            val lastTime = allPrograms.last().first
+                            val lastHour = Calendar.getInstance().apply { timeInMillis = lastTime }.get(Calendar.HOUR_OF_DAY)
+                            if (lastHour >= 20) {
+                                cal.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+
                         allPrograms.add(Pair(cal.timeInMillis, title))
                     }
                 }
