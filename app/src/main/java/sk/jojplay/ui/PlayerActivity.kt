@@ -102,7 +102,6 @@ class PlayerActivity : AppCompatActivity() {
     private fun loadEpgFromSms(smsId: String, channelName: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Dátum v časovom pásme Bratislava
                 val dateSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
                     timeZone = TZ
                 }
@@ -121,37 +120,37 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
                 val now = System.currentTimeMillis()
-
-                // Čas zobrazenia v Bratislave
                 val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
                     timeZone = TZ
                 }
 
-                // Regex podľa SMS HTML štruktúry
-                val regex = Regex(
-                    """<span[^>]*>(\d{2}\.\d{2})</span>.*?<a class='nazev'[^>]*>\s*<div[^>]*>\s*([^<]{2,100}?)\s*<div""",
-                    RegexOption.DOT_MATCHES_ALL
-                )
+                // Parsuj časy a názvy pomocou dvoch jednoduchých regexov
+                // Hľadáme bloky: <div class='porad'>...<span>HH.MM</span>...<a class='nazev'>...<div>Názov</div>
+                val timeRegex = Regex("""<span[^>]*>(\d{2}\.\d{2})</span>""")
+                val titleRegex = Regex("""<a class='nazev'[^>]*>[^<]*<div[^>]*>([^<]+)""")
+
+                val times = timeRegex.findAll(html).map { it.groupValues[1] }.toList()
+                val titles = titleRegex.findAll(html).map {
+                    it.groupValues[1]
+                        .replace("&amp;", "&")
+                        .replace("&nbsp;", " ")
+                        .replace("&#[0-9]+;".toRegex(), "")
+                        .trim()
+                }.filter { it.length >= 2 }.toList()
 
                 val allPrograms = mutableListOf<Pair<Long, String>>()
 
-                // Základ pre dnešný dátum v časovom pásme Bratislava
                 val baseCal = Calendar.getInstance(TZ)
                 val todayYear  = baseCal.get(Calendar.YEAR)
                 val todayMonth = baseCal.get(Calendar.MONTH)
                 val todayDay   = baseCal.get(Calendar.DAY_OF_MONTH)
 
                 var prevHour = -1
+                val count = minOf(times.size, titles.size)
 
-                for (match in regex.findAll(html)) {
-                    val timeStr = match.groupValues[1].replace(".", ":")
-                    val title = match.groupValues[2]
-                        .replace("&amp;", "&")
-                        .replace("&nbsp;", " ")
-                        .replace("&#[0-9]+;".toRegex(), "")
-                        .trim()
-
-                    if (title.isBlank() || title.length < 2) continue
+                for (i in 0 until count) {
+                    val timeStr = times[i].replace(".", ":")
+                    val title = titles[i]
 
                     runCatching {
                         val parts = timeStr.split(":")
@@ -162,7 +161,7 @@ class PlayerActivity : AppCompatActivity() {
                         cal.set(todayYear, todayMonth, todayDay, hour, min, 0)
                         cal.set(Calendar.MILLISECOND, 0)
 
-                        // Programy po polnoci (hodina skočí z 23 na 0-5)
+                        // Programy po polnoci
                         if (prevHour >= 20 && hour < 6) {
                             cal.add(Calendar.DAY_OF_MONTH, 1)
                         }
@@ -205,10 +204,16 @@ class PlayerActivity : AppCompatActivity() {
                     epgHideHandler.postDelayed(epgHideRunnable, 5000L)
                 }
 
-                // Obnov o 5 minút
+                // Obnov keď aktuálny program skončí (+ 10s rezerva)
+                // Ak nevieme kedy skončí, obnov o 5 minút
+                val refreshDelay = if (nextStartMs > now) {
+                    (nextStartMs - now) + 10_000L
+                } else {
+                    5 * 60 * 1000L
+                }
                 val refresh = Runnable { loadEpgFromSms(smsId, channelName) }
                 epgRefreshRunnable = refresh
-                epgHandler.postDelayed(refresh, 5 * 60 * 1000L)
+                epgHandler.postDelayed(refresh, refreshDelay)
 
             } catch (e: Exception) {
                 // Tiché zlyhanie
@@ -273,7 +278,8 @@ class PlayerActivity : AppCompatActivity() {
                 epgContainer.visibility = View.VISIBLE
                 epgHideHandler.removeCallbacks(epgHideRunnable)
                 epgHideHandler.postDelayed(epgHideRunnable, 5000L)
-                showController(); true
+                showController()
+                true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
                 player?.let { if (it.isPlaying) it.pause() else it.play() }; true
