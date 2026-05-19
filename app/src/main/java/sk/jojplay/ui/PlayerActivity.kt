@@ -45,10 +45,8 @@ class PlayerActivity : AppCompatActivity() {
     private var epgRefreshRunnable: Runnable? = null
     private val client = OkHttpClient()
 
-    // Časové pásmo pre SMS server (CZ/SK)
     private val TZ = TimeZone.getTimeZone("Europe/Bratislava")
 
-    // Auto-skrytie EPG panelu
     private val epgHideHandler = Handler(Looper.getMainLooper())
     private val epgHideRunnable = Runnable { epgContainer.visibility = View.GONE }
 
@@ -97,80 +95,76 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    // ── EPG zo sms.cz ─────────────────────────────────────────────────────────
-
     private fun loadEpgFromSms(smsId: String, channelName: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val dateSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
-                    timeZone = TZ
-                }
-                val date = dateSdf.format(Date())
-                val url = "https://m.tv.sms.cz/index.php?den=$date&stanice=$smsId&cas=0"
+                // Aktuálny čas
+                val now = System.currentTimeMillis()
 
+                // Bratislavský kalendár pre dnešok
+                val nowCal = Calendar.getInstance(TZ)
+                nowCal.timeInMillis = now
+
+                val dateSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply { timeZone = TZ }
+                val date = dateSdf.format(Date(now))
+
+                val url = "https://m.tv.sms.cz/index.php?den=$date&stanice=$smsId&cas=0"
                 val req = Request.Builder()
                     .url(url)
                     .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36")
                     .build()
 
-                // Čítaj ako windows-1250
                 val html = client.newCall(req).execute().use { resp ->
                     val bytes = resp.body?.bytes() ?: return@use ""
                     String(bytes, charset("windows-1250"))
                 }
 
-                val now = System.currentTimeMillis()
-                val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
-                    timeZone = TZ
-                }
+                val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault()).apply { timeZone = TZ }
 
-                // Parsuj časy a názvy pomocou dvoch jednoduchých regexov
-                // Hľadáme bloky: <div class='porad'>...<span>HH.MM</span>...<a class='nazev'>...<div>Názov</div>
+                // Parsuj časy a názvy
                 val timeRegex = Regex("""<span[^>]*>(\d{2}\.\d{2})</span>""")
                 val titleRegex = Regex("""<a class='nazev'[^>]*>[^<]*<div[^>]*>([^<]+)""")
 
                 val times = timeRegex.findAll(html).map { it.groupValues[1] }.toList()
-                val titles = titleRegex.findAll(html).map {
-                    it.groupValues[1]
-                        .replace("&amp;", "&")
-                        .replace("&nbsp;", " ")
-                        .replace("&#[0-9]+;".toRegex(), "")
-                        .trim()
-                }.filter { it.length >= 2 }.toList()
+                val titles = titleRegex.findAll(html)
+                    .map { it.groupValues[1].replace("&amp;", "&").replace("&nbsp;", " ").trim() }
+                    .filter { it.length >= 2 }
+                    .toList()
 
+                // Zostav zoznam programov s presným timestamp
                 val allPrograms = mutableListOf<Pair<Long, String>>()
-
-                val baseCal = Calendar.getInstance(TZ)
-                val todayYear  = baseCal.get(Calendar.YEAR)
-                val todayMonth = baseCal.get(Calendar.MONTH)
-                val todayDay   = baseCal.get(Calendar.DAY_OF_MONTH)
-
-                var prevHour = -1
                 val count = minOf(times.size, titles.size)
 
-                for (i in 0 until count) {
-                    val timeStr = times[i].replace(".", ":")
-                    val title = titles[i]
+                // Základ: dnešný dátum v Bratislave
+                val baseCal = Calendar.getInstance(TZ)
+                baseCal.timeInMillis = now
+                val year  = baseCal.get(Calendar.YEAR)
+                val month = baseCal.get(Calendar.MONTH)
+                val day   = baseCal.get(Calendar.DAY_OF_MONTH)
 
+                var lastMs = -1L
+
+                for (i in 0 until count) {
                     runCatching {
-                        val parts = timeStr.split(":")
+                        val parts = times[i].split(".")
                         val hour = parts[0].toInt()
                         val min  = parts[1].toInt()
 
                         val cal = Calendar.getInstance(TZ)
-                        cal.set(todayYear, todayMonth, todayDay, hour, min, 0)
+                        cal.set(year, month, day, hour, min, 0)
                         cal.set(Calendar.MILLISECOND, 0)
 
-                        // Programy po polnoci
-                        if (prevHour >= 20 && hour < 6) {
+                        // Ak timestamp klesol (polnoc), posuň o deň vpred
+                        if (lastMs >= 0 && cal.timeInMillis < lastMs) {
                             cal.add(Calendar.DAY_OF_MONTH, 1)
                         }
 
-                        prevHour = hour
-                        allPrograms.add(Pair(cal.timeInMillis, title))
+                        lastMs = cal.timeInMillis
+                        allPrograms.add(Pair(cal.timeInMillis, titles[i]))
                     }
                 }
 
+                // Nájdi aktuálny program – posledný ktorého čas je <= now
                 var currentTitle = channelName
                 var currentStart = ""
                 var nextStart = ""
@@ -204,12 +198,12 @@ class PlayerActivity : AppCompatActivity() {
                     epgHideHandler.postDelayed(epgHideRunnable, 5000L)
                 }
 
-                // Obnov keď aktuálny program skončí (+ 10s rezerva)
-                // Ak nevieme kedy skončí, obnov o 5 minút
+                // Obnov keď aktuálny program skončí
+                // Obnov keď program skončí + každú minútu pre istotu
                 val refreshDelay = if (nextStartMs > now) {
-                    (nextStartMs - now) + 10_000L
+                    minOf((nextStartMs - now) + 10_000L, 60_000L)
                 } else {
-                    5 * 60 * 1000L
+                    60_000L
                 }
                 val refresh = Runnable { loadEpgFromSms(smsId, channelName) }
                 epgRefreshRunnable = refresh
@@ -220,8 +214,6 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
     }
-
-    // ── Player controls ───────────────────────────────────────────────────────
 
     private fun scheduleHide() {
         hideHandler.removeCallbacks(hideRunnable)
