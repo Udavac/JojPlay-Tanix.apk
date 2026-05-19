@@ -75,6 +75,8 @@ class PlayerActivity : AppCompatActivity() {
         epgTitle     = findViewById(R.id.epgTitle)
         epgTime      = findViewById(R.id.epgTime)
         epgBar       = findViewById(R.id.epgBar)
+        epgBar.progressTintList = android.content.res.ColorStateList.valueOf(0xFFE30613.toInt())
+epgBar.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0xFF444444.toInt())
 
         playerView.controllerShowTimeoutMs = 3000
         playerView.controllerAutoShow = false
