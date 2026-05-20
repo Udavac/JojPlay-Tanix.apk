@@ -50,6 +50,8 @@ class PlayerActivity : AppCompatActivity() {
     private val epgHideHandler = Handler(Looper.getMainLooper())
     private val epgHideRunnable = Runnable { epgContainer.visibility = View.GONE }
 
+    private var isLiveChannel = false
+
     private val SMS_CHANNEL_MAP = mapOf(
         "33-joj"            to "JOJ",
         "206-joj-plus"      to "JOJ+Plus",
@@ -84,7 +86,7 @@ class PlayerActivity : AppCompatActivity() {
         val channelId   = intent.getStringExtra("channelId")
         val channelName = intent.getStringExtra("channelName") ?: ""
         // Live TV ak má channelId (kanál) – archív/videá nemajú
-        val isLiveChannel = channelId != null && SMS_CHANNEL_MAP.containsKey(channelId)""
+        isLiveChannel = channelId != null && SMS_CHANNEL_MAP.containsKey(channelId)"
 
         initPlayer(url, isDash)
         epgContainer.visibility = View.GONE
