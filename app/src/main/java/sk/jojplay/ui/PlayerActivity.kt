@@ -55,7 +55,7 @@ class PlayerActivity : AppCompatActivity() {
     private val SMS_CHANNEL_MAP = mapOf(
         "33-joj"            to "JOJ",
         "206-joj-plus"      to "JOJ+Plus",
-        "718-wau"           to "WAU",
+        "718-wau"           to "JOJ+Krimi",
         "15441-joj-24"      to "JOJ+24",
         "15291-joj-sport"   to "JOJ+%8Aport",
         "15611-joj-sport-2" to "JOJ+%8Aport+2",
@@ -197,10 +197,11 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
                 // Obnov keď program skončí + každú minútu pre istotu
+                // Obnov keď program skončí, max 10 minút
                 val refreshDelay = if (nextStartMs > now) {
-                    minOf((nextStartMs - now) + 10_000L, 60_000L)
+                    minOf((nextStartMs - now) + 10_000L, 10 * 60 * 1000L)
                 } else {
-                    60_000L
+                    10 * 60 * 1000L
                 }
                 val refresh = Runnable { loadEpgFromSms(smsId, channelName) }
                 epgRefreshRunnable = refresh
