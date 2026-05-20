@@ -86,7 +86,7 @@ class PlayerActivity : AppCompatActivity() {
         val channelId   = intent.getStringExtra("channelId")
         val channelName = intent.getStringExtra("channelName") ?: ""
         // Live TV ak má channelId (kanál) – archív/videá nemajú
-        isLiveChannel = channelId != null && SMS_CHANNEL_MAP.containsKey(channelId)"
+        isLiveChannel = channelId != null && SMS_CHANNEL_MAP.containsKey(channelId)
 
         initPlayer(url, isDash)
         epgContainer.visibility = View.GONE
