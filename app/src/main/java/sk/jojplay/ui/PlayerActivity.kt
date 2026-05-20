@@ -102,13 +102,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun loadEpgFromSms(smsId: String, channelName: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Aktuálny čas
                 val now = System.currentTimeMillis()
-
-                // Bratislavský kalendár pre dnešok
-                val nowCal = Calendar.getInstance(TZ)
-                nowCal.timeInMillis = now
-
                 val dateSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply { timeZone = TZ }
                 val date = dateSdf.format(Date(now))
 
@@ -202,7 +196,6 @@ class PlayerActivity : AppCompatActivity() {
                     epgHideHandler.postDelayed(epgHideRunnable, 5000L)
                 }
 
-                // Obnov keď aktuálny program skončí
                 // Obnov keď program skončí + každú minútu pre istotu
                 val refreshDelay = if (nextStartMs > now) {
                     minOf((nextStartMs - now) + 10_000L, 60_000L)
