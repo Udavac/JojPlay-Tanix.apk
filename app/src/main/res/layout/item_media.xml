@@ -67,6 +67,6 @@
             android:textSize="13sp"
             android:maxLines="2"
             android:ellipsize="end"/>
-
+            android:gravity="center"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
