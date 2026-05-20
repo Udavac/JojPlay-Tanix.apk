@@ -241,7 +241,7 @@ class PlayerActivity : AppCompatActivity() {
             exo.prepare()
             exo.playWhenReady = true
 
-            playerView.post {
+            playerView.postDelayed({
                 // Červená farba pre progress bar
                 try {
                     val progressBar = playerView.findViewById<android.widget.ProgressBar>(
@@ -264,7 +264,7 @@ class PlayerActivity : AppCompatActivity() {
                         } catch (e: Exception) { }
                     }
                 }
-            }
+            }, 500L)
             exo.addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(state: Int) {
                     progressBar.visibility = if (state == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
