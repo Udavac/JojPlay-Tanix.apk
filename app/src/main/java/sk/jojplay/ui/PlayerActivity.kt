@@ -75,8 +75,6 @@ class PlayerActivity : AppCompatActivity() {
         epgTitle     = findViewById(R.id.epgTitle)
         epgTime      = findViewById(R.id.epgTime)
         epgBar       = findViewById(R.id.epgBar)
-        epgBar.progressTintList = android.content.res.ColorStateList.valueOf(0xFFE30613.toInt())
-epgBar.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0xFF444444.toInt())
 
         playerView.controllerShowTimeoutMs = 3000
         playerView.controllerAutoShow = false
@@ -244,6 +242,17 @@ epgBar.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0
             exo.setMediaSource(src)
             exo.prepare()
             exo.playWhenReady = true
+
+            // Červená farba pre progress bar v ExoPlayer controlleri
+            playerView.post {
+                try {
+                    val progressBar = playerView.findViewById<android.widget.ProgressBar>(
+                        androidx.media3.ui.R.id.exo_progress
+                    )
+                    progressBar?.progressTintList = android.content.res.ColorStateList.valueOf(0xFFE30613.toInt())
+                    progressBar?.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0xFF555555.toInt())
+                } catch (e: Exception) { }
+            }
             exo.addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(state: Int) {
                     progressBar.visibility = if (state == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
@@ -277,6 +286,16 @@ epgBar.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
                 player?.let { if (it.isPlaying) it.pause() else it.play() }; true
+            }
+            KeyEvent.KEYCODE_MENU, KeyEvent.KEYCODE_INFO -> {
+                // Otvor ExoPlayer settings (ozubené koleso) cez diaľkový
+                try {
+                    val settingsButton = playerView.findViewById<android.widget.ImageButton>(
+                        androidx.media3.ui.R.id.exo_settings
+                    )
+                    settingsButton?.performClick()
+                } catch (e: Exception) { }
+                true
             }
             KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
                 epgContainer.visibility = View.GONE
