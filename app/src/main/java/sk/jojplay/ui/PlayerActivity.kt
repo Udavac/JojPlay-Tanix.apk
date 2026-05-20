@@ -83,6 +83,8 @@ class PlayerActivity : AppCompatActivity() {
         val isDash      = intent.getBooleanExtra("isDash", true)
         val channelId   = intent.getStringExtra("channelId")
         val channelName = intent.getStringExtra("channelName") ?: ""
+        // Live TV ak má channelId (kanál) – archív/videá nemajú
+        val isLiveChannel = channelId != null && SMS_CHANNEL_MAP.containsKey(channelId)""
 
         initPlayer(url, isDash)
         epgContainer.visibility = View.GONE
@@ -243,8 +245,8 @@ class PlayerActivity : AppCompatActivity() {
             exo.prepare()
             exo.playWhenReady = true
 
-            // Červená farba pre progress bar v ExoPlayer controlleri
             playerView.post {
+                // Červená farba pre progress bar
                 try {
                     val progressBar = playerView.findViewById<android.widget.ProgressBar>(
                         androidx.media3.ui.R.id.exo_progress
@@ -252,6 +254,20 @@ class PlayerActivity : AppCompatActivity() {
                     progressBar?.progressTintList = android.content.res.ColorStateList.valueOf(0xFFE30613.toInt())
                     progressBar?.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0xFF555555.toInt())
                 } catch (e: Exception) { }
+
+                // Pre live TV skry tlačidlá pretáčania
+                if (isLiveChannel) {
+                    listOf(
+                        androidx.media3.ui.R.id.exo_prev,
+                        androidx.media3.ui.R.id.exo_next,
+                        androidx.media3.ui.R.id.exo_rew,
+                        androidx.media3.ui.R.id.exo_ffwd
+                    ).forEach { id ->
+                        try {
+                            playerView.findViewById<android.widget.ImageButton>(id)?.visibility = View.GONE
+                        } catch (e: Exception) { }
+                    }
+                }
             }
             exo.addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(state: Int) {
@@ -302,10 +318,13 @@ class PlayerActivity : AppCompatActivity() {
                 finish(); true
             }
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                player?.seekTo((player!!.currentPosition + 10_000).coerceAtMost(player!!.duration)); true
+                // Pretáčanie len pre archív/videá, nie pre live TV
+                if (isLiveChannel) true
+                else { player?.seekTo((player!!.currentPosition + 10_000).coerceAtMost(player!!.duration)); true }
             }
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-                player?.seekTo((player!!.currentPosition - 10_000).coerceAtLeast(0)); true
+                if (isLiveChannel) true
+                else { player?.seekTo((player!!.currentPosition - 10_000).coerceAtLeast(0)); true }
             }
             else -> super.onKeyDown(keyCode, event)
         }
