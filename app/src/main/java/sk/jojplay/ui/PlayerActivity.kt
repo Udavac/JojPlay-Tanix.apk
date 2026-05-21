@@ -218,8 +218,36 @@ class PlayerActivity : AppCompatActivity() {
         hideHandler.postDelayed(hideRunnable, 4000)
     }
 
+    private fun applyControllerStyle() {
+        // Červená farba progress bar
+        try {
+            val pb = playerView.findViewById<android.widget.ProgressBar>(
+                androidx.media3.ui.R.id.exo_progress
+            )
+            pb?.progressTintList = android.content.res.ColorStateList.valueOf(0xFFE30613.toInt())
+            pb?.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0xFF555555.toInt())
+        } catch (e: Exception) { }
+
+        // Pre live TV skry pretáčacie tlačidlá
+        if (isLiveChannel) {
+            listOf(
+                androidx.media3.ui.R.id.exo_prev,
+                androidx.media3.ui.R.id.exo_next,
+                androidx.media3.ui.R.id.exo_rew,
+                androidx.media3.ui.R.id.exo_ffwd,
+                androidx.media3.ui.R.id.exo_rew_with_amount,
+                androidx.media3.ui.R.id.exo_ffwd_with_amount
+            ).forEach { id ->
+                try {
+                    playerView.findViewById<android.view.View>(id)?.visibility = View.GONE
+                } catch (e: Exception) { }
+            }
+        }
+    }
+
     private fun showController() {
         playerView.showController()
+        playerView.postDelayed({ applyControllerStyle() }, 100L)
         scheduleHide()
     }
 
@@ -241,30 +269,16 @@ class PlayerActivity : AppCompatActivity() {
             exo.prepare()
             exo.playWhenReady = true
 
-            playerView.postDelayed({
-                // Červená farba pre progress bar
-                try {
-                    val progressBar = playerView.findViewById<android.widget.ProgressBar>(
-                        androidx.media3.ui.R.id.exo_progress
-                    )
-                    progressBar?.progressTintList = android.content.res.ColorStateList.valueOf(0xFFE30613.toInt())
-                    progressBar?.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0xFF555555.toInt())
-                } catch (e: Exception) { }
-
-                // Pre live TV skry tlačidlá pretáčania
-                if (isLiveChannel) {
-                    listOf(
-                        androidx.media3.ui.R.id.exo_prev,
-                        androidx.media3.ui.R.id.exo_next,
-                        androidx.media3.ui.R.id.exo_rew,
-                        androidx.media3.ui.R.id.exo_ffwd
-                    ).forEach { id ->
-                        try {
-                            playerView.findViewById<android.widget.ImageButton>(id)?.visibility = View.GONE
-                        } catch (e: Exception) { }
+            // Aplikuj štýl pri každom zobrazení controllera (live aj archív)
+            playerView.setControllerVisibilityListener(
+                androidx.media3.ui.PlayerView.ControllerVisibilityListener { visibility ->
+                    if (visibility == View.VISIBLE) {
+                        playerView.postDelayed({ applyControllerStyle() }, 100L)
                     }
                 }
-            }, 500L)
+            )
+
+
             exo.addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(state: Int) {
                     progressBar.visibility = if (state == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
