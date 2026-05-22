@@ -219,7 +219,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun applyControllerStyle() {
-        // Červená farba progress bar
+        // Červená farba progress bar - skús oba typy
         try {
             val pb = playerView.findViewById<android.widget.ProgressBar>(
                 androidx.media3.ui.R.id.exo_progress
@@ -228,7 +228,30 @@ class PlayerActivity : AppCompatActivity() {
             pb?.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(0xFF555555.toInt())
         } catch (e: Exception) { }
 
-        // Pre live TV skry pretáčacie tlačidlá
+        // DefaultTimeBar (Media3)
+        try {
+            val timeBar = playerView.findViewById<androidx.media3.ui.DefaultTimeBar>(
+                androidx.media3.ui.R.id.exo_progress
+            )
+            timeBar?.setPlayedColor(0xFFE30613.toInt())
+            timeBar?.setUnplayedColor(0xFF555555.toInt())
+            timeBar?.setBufferedColor(0xFFAA0000.toInt())
+            timeBar?.setScrubberColor(0xFFE30613.toInt())
+        } catch (e: Exception) { }
+
+        // Červené zvýraznenie pre ozubené koleso pri focuse
+        try {
+            val settings = playerView.findViewById<android.widget.ImageButton>(
+                androidx.media3.ui.R.id.exo_settings
+            )
+            settings?.setOnFocusChangeListener { v, hasFocus ->
+                v.setBackgroundColor(
+                    if (hasFocus) 0xFFE30613.toInt() else android.graphics.Color.TRANSPARENT
+                )
+            }
+        } catch (e: Exception) { }
+
+        // Pre live TV skry pretáčacie tlačidlá aj progress bar
         if (isLiveChannel) {
             listOf(
                 androidx.media3.ui.R.id.exo_prev,
@@ -236,7 +259,10 @@ class PlayerActivity : AppCompatActivity() {
                 androidx.media3.ui.R.id.exo_rew,
                 androidx.media3.ui.R.id.exo_ffwd,
                 androidx.media3.ui.R.id.exo_rew_with_amount,
-                androidx.media3.ui.R.id.exo_ffwd_with_amount
+                androidx.media3.ui.R.id.exo_ffwd_with_amount,
+                androidx.media3.ui.R.id.exo_progress,  // progress bar
+                androidx.media3.ui.R.id.exo_time,      // čas
+                androidx.media3.ui.R.id.exo_duration   // dĺžka
             ).forEach { id ->
                 try {
                     playerView.findViewById<android.view.View>(id)?.visibility = View.GONE
