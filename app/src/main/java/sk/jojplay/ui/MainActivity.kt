@@ -39,7 +39,11 @@ class MainActivity : AppCompatActivity() {
         titleView   = findViewById(R.id.titleView)
 
         val cols = if (resources.configuration.screenWidthDp >= 600) 4 else 3
-        recycler.layoutManager = GridLayoutManager(this, cols)
+        val gridLayout = GridLayoutManager(this, cols)
+        gridLayout.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int = 1
+        }
+        recycler.layoutManager = gridLayout
         recycler.setHasFixedSize(true)
 
         adapter = MediaAdapter { item -> vm.onItemClick(item) }
