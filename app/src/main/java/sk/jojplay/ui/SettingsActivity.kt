@@ -78,6 +78,13 @@ class SettingsActivity : AppCompatActivity() {
             } else false
         }
 
+        // Červené zvýraznenie pri focuse
+        checkShowPass.setOnFocusChangeListener { v, hasFocus ->
+            v.setBackgroundColor(
+                if (hasFocus) 0x33E30613.toInt() else android.graphics.Color.TRANSPARENT
+            )
+        }
+
         emailInput.requestFocus()
     }
 }
