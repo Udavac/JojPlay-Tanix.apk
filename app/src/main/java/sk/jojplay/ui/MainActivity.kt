@@ -199,9 +199,15 @@ class MediaAdapter(private val onClick: (MediaItem) -> Unit) :
     override fun getItemViewType(position: Int): Int {
         val item = items[position]
         return when {
-            // Titulná stránka – CATEGORY bez preview (ikony)
-            item.type == ItemType.CATEGORY && item.preview == null -> TYPE_ICON
-            // Všetko ostatné – centerCrop (TV naživo, videá, seriály, podkategórie)
+            // Titulná stránka – len špeciálne ID (ikony z SCREEN_IMAGES, live, search, account, settings)
+            item.type == ItemType.CATEGORY && (
+                item.id.startsWith("screen-") ||
+                item.id == "__search__" ||
+                item.id == "__account__" ||
+                item.id == "__settings__"
+            ) -> TYPE_ICON
+            item.type == ItemType.CHANNEL && item.id == "__live__" -> TYPE_ICON
+            // Všetko ostatné – centerCrop (videá, seriály, podkategórie, kanály)
             else -> TYPE_THUMB
         }
     }
