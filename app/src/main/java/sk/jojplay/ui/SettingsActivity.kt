@@ -22,14 +22,28 @@ class SettingsActivity : AppCompatActivity() {
 
         val tokenManager = TokenManager(this)
 
-        val emailInput       = findViewById<EditText>(R.id.inputEmail)
-        val passInput        = findViewById<EditText>(R.id.inputPassword)
-        val btnSave          = findViewById<Button>(R.id.btnSave)
-        val btnCancel        = findViewById<Button>(R.id.btnCancel)
-        val checkShowPass    = findViewById<CheckBox>(R.id.checkShowPassword)
+        val emailInput    = findViewById<EditText>(R.id.inputEmail)
+        val passInput     = findViewById<EditText>(R.id.inputPassword)
+        val btnSave       = findViewById<Button>(R.id.btnSave)
+        val btnCancel     = findViewById<Button>(R.id.btnCancel)
+        val checkShowPass = findViewById<CheckBox>(R.id.checkShowPassword)
 
         emailInput.setText(tokenManager.email)
         passInput.setText(tokenManager.password)
+
+        // Červené orámovanie pri focuse pre email
+        emailInput.setOnFocusChangeListener { v, hasFocus ->
+            (v as EditText).setBackgroundResource(
+                if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
+            )
+        }
+
+        // Červené orámovanie pri focuse pre heslo
+        passInput.setOnFocusChangeListener { v, hasFocus ->
+            (v as EditText).setBackgroundResource(
+                if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
+            )
+        }
 
         // Zobraziť / skryť heslo
         checkShowPass.setOnCheckedChangeListener { _, isChecked ->
@@ -38,7 +52,6 @@ class SettingsActivity : AppCompatActivity() {
             } else {
                 passInput.transformationMethod = PasswordTransformationMethod.getInstance()
             }
-            // Kurzor na koniec
             passInput.setSelection(passInput.text.length)
         }
 
@@ -59,7 +72,7 @@ class SettingsActivity : AppCompatActivity() {
         btnSave.setOnClickListener { save() }
         btnCancel.setOnClickListener { setResult(Activity.RESULT_CANCELED); finish() }
 
-        // TV diaľkový ovládač
+        // TV diaľkový ovládač – tlačidlá
         for (btn in listOf(btnSave, btnCancel)) {
             btn.setOnKeyListener { _, keyCode, event ->
                 if (event.action == KeyEvent.ACTION_DOWN &&
@@ -78,7 +91,7 @@ class SettingsActivity : AppCompatActivity() {
             } else false
         }
 
-        // Červené zvýraznenie pri focuse
+        // Červené zvýraznenie checkboxu pri focuse
         checkShowPass.setOnFocusChangeListener { v, hasFocus ->
             v.setBackgroundColor(
                 if (hasFocus) 0x33E30613.toInt() else android.graphics.Color.TRANSPARENT
