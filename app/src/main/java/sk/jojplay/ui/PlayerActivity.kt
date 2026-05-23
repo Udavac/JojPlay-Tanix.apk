@@ -330,10 +330,12 @@ class PlayerActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
+                // EPG vždy zobraz na 5 sekúnd
                 epgContainer.visibility = View.VISIBLE
                 epgHideHandler.removeCallbacks(epgHideRunnable)
                 epgHideHandler.postDelayed(epgHideRunnable, 5000L)
-                showController()
+                // Controller len pre archív
+                if (!isLiveChannel) showController()
                 true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
