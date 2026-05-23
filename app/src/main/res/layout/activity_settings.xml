@@ -110,8 +110,9 @@
             android:layout_weight="1"
             android:text="Uložiť"
             android:textSize="16sp"
-            android:backgroundTint="#E30613"
+            android:backgroundTint="#333333"
             android:focusable="true"
             android:nextFocusLeft="@id/btnCancel"/>
+
     </LinearLayout>
 </LinearLayout>
