@@ -78,15 +78,15 @@ class PlayerActivity : AppCompatActivity() {
         epgTime      = findViewById(R.id.epgTime)
         epgBar       = findViewById(R.id.epgBar)
 
-        playerView.controllerShowTimeoutMs = 3000
-        playerView.controllerAutoShow = false
-
         val url         = intent.getStringExtra("url") ?: run { finish(); return }
         val isDash      = intent.getBooleanExtra("isDash", true)
         val channelId   = intent.getStringExtra("channelId")
         val channelName = intent.getStringExtra("channelName") ?: ""
         // Live TV ak má channelId (kanál) – archív/videá nemajú
         isLiveChannel = channelId != null && SMS_CHANNEL_MAP.containsKey(channelId)
+
+        playerView.controllerShowTimeoutMs = 3000
+        playerView.controllerAutoShow = false
 
         initPlayer(url, isDash)
         epgContainer.visibility = View.GONE
@@ -330,12 +330,18 @@ class PlayerActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
-                // EPG vždy zobraz na 5 sekúnd
-                epgContainer.visibility = View.VISIBLE
-                epgHideHandler.removeCallbacks(epgHideRunnable)
-                epgHideHandler.postDelayed(epgHideRunnable, 5000L)
-                // Controller len pre archív
-                if (!isLiveChannel) showController()
+                if (isLiveChannel) {
+                    // Live TV – zobraz len EPG na 5 sekúnd, bez controllera
+                    epgContainer.visibility = View.VISIBLE
+                    epgHideHandler.removeCallbacks(epgHideRunnable)
+                    epgHideHandler.postDelayed(epgHideRunnable, 5000L)
+                } else {
+                    // Archív – zobraz EPG aj controller
+                    epgContainer.visibility = View.VISIBLE
+                    epgHideHandler.removeCallbacks(epgHideRunnable)
+                    epgHideHandler.postDelayed(epgHideRunnable, 5000L)
+                    showController()
+                }
                 true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
