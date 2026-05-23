@@ -9,5 +9,7 @@
         <item name="android:statusBarColor">#000000</item>
         <item name="android:navigationBarColor">#000000</item>
         <item name="strokeColor">#E30613</item>
+        <item name="android:listSelector">@drawable/list_selector</item>
+        <item name="android:colorFocusedHighlight">#E30613</item>
     </style>
 </resources>
