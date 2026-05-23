@@ -2,6 +2,8 @@ package sk.jojplay.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -31,17 +33,20 @@ class SettingsActivity : AppCompatActivity() {
         emailInput.setText(tokenManager.email)
         passInput.setText(tokenManager.password)
 
-        // Červené orámovanie pri focuse pre email
+        // Červené orámovanie pri focuse – email
         emailInput.setOnFocusChangeListener { v, hasFocus ->
-            (v as EditText).setBackgroundResource(
-                if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
-            )
+            v.setBackgroundColor(if (hasFocus) 0x33E30613.toInt() else Color.TRANSPARENT)
         }
 
-        // Červené orámovanie pri focuse pre heslo
+        // Červené orámovanie pri focuse – heslo
         passInput.setOnFocusChangeListener { v, hasFocus ->
-            (v as EditText).setBackgroundResource(
-                if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
+            v.setBackgroundColor(if (hasFocus) 0x33E30613.toInt() else Color.TRANSPARENT)
+        }
+
+        // Uložiť – červená len pri focuse
+        btnSave.setOnFocusChangeListener { v, hasFocus ->
+            (v as Button).backgroundTintList = ColorStateList.valueOf(
+                if (hasFocus) 0xFFE30613.toInt() else 0xFF333333.toInt()
             )
         }
 
@@ -93,9 +98,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Červené zvýraznenie checkboxu pri focuse
         checkShowPass.setOnFocusChangeListener { v, hasFocus ->
-            v.setBackgroundColor(
-                if (hasFocus) 0x33E30613.toInt() else android.graphics.Color.TRANSPARENT
-            )
+            v.setBackgroundColor(if (hasFocus) 0x33E30613.toInt() else Color.TRANSPARENT)
         }
 
         emailInput.requestFocus()
