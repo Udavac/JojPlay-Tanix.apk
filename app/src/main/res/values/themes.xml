@@ -12,11 +12,5 @@
         <item name="strokeColor">#E30613</item>
         <item name="android:listSelector">@drawable/list_selector</item>
         <item name="android:colorFocusedHighlight">#E30613</item>
-        <item name="recyclerViewStyle">@style/RedRecyclerView</item>
-    </style>
-
-    <style name="RedRecyclerView" parent="Widget.RecyclerView">
-        <item name="android:focusable">true</item>
-        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>
