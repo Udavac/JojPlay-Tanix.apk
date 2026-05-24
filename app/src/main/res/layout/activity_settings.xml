@@ -16,12 +16,6 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
-    <View
-        android:layout_width="80dp"
-        android:layout_height="3dp"
-        android:background=""
-        android:layout_marginBottom="32dp"/>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
