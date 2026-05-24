@@ -249,6 +249,10 @@ class PlayerActivity : AppCompatActivity() {
                     if (hasFocus) 0xFFE30613.toInt() else android.graphics.Color.TRANSPARENT
                 )
             }
+            // Po kliknutí na settings – zvýrazni položky v menu
+            settings?.setOnClickListener {
+                playerView.postDelayed({ applySettingsMenuStyle() }, 300L)
+            }
         } catch (e: Exception) { }
 
         // Pre live TV skry pretáčacie tlačidlá aj progress bar
@@ -269,6 +273,37 @@ class PlayerActivity : AppCompatActivity() {
                 } catch (e: Exception) { }
             }
         }
+    }
+
+    private fun applySettingsMenuStyle() {
+        // Nájdi settings panel a zvýrazni položky červenou pri focuse
+        try {
+            val rootView = window.decorView.rootView
+            findAllRecyclerViews(rootView).forEach { rv ->
+                rv.addOnChildAttachStateChangeListener(
+                    object : androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
+                        override fun onChildViewAttachedToWindow(view: android.view.View) {
+                            view.setOnFocusChangeListener { v, hasFocus ->
+                                v.setBackgroundColor(
+                                    if (hasFocus) 0x55E30613.toInt()
+                                    else android.graphics.Color.TRANSPARENT
+                                )
+                            }
+                        }
+                        override fun onChildViewDetachedFromWindow(view: android.view.View) {}
+                    }
+                )
+            }
+        } catch (e: Exception) { }
+    }
+
+    private fun findAllRecyclerViews(view: android.view.View): List<androidx.recyclerview.widget.RecyclerView> {
+        val result = mutableListOf<androidx.recyclerview.widget.RecyclerView>()
+        if (view is androidx.recyclerview.widget.RecyclerView) result.add(view)
+        if (view is android.view.ViewGroup) {
+            for (i in 0 until view.childCount) result.addAll(findAllRecyclerViews(view.getChildAt(i)))
+        }
+        return result
     }
 
     private fun showController() {
@@ -330,18 +365,12 @@ class PlayerActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
-                if (isLiveChannel) {
-                    // Live TV – zobraz len EPG na 5 sekúnd, bez controllera
-                    epgContainer.visibility = View.VISIBLE
-                    epgHideHandler.removeCallbacks(epgHideRunnable)
-                    epgHideHandler.postDelayed(epgHideRunnable, 5000L)
-                } else {
-                    // Archív – zobraz EPG aj controller
-                    epgContainer.visibility = View.VISIBLE
-                    epgHideHandler.removeCallbacks(epgHideRunnable)
-                    epgHideHandler.postDelayed(epgHideRunnable, 5000L)
-                    showController()
-                }
+                // Vždy zobraz EPG na 5 sekúnd
+                epgContainer.visibility = View.VISIBLE
+                epgHideHandler.removeCallbacks(epgHideRunnable)
+                epgHideHandler.postDelayed(epgHideRunnable, 5000L)
+                // Controller len pre archív
+                if (!isLiveChannel) showController()
                 true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
