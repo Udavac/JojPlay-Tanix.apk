@@ -5,11 +5,18 @@
         <item name="colorPrimaryVariant">#B00010</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="colorSecondary">#E30613</item>
+        <item name="colorAccent">#E30613</item>
         <item name="android:windowBackground">#0D0D0D</item>
         <item name="android:statusBarColor">#000000</item>
         <item name="android:navigationBarColor">#000000</item>
         <item name="strokeColor">#E30613</item>
         <item name="android:listSelector">@drawable/list_selector</item>
         <item name="android:colorFocusedHighlight">#E30613</item>
+        <item name="recyclerViewStyle">@style/RedRecyclerView</item>
+    </style>
+
+    <style name="RedRecyclerView" parent="Widget.RecyclerView">
+        <item name="android:focusable">true</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>
