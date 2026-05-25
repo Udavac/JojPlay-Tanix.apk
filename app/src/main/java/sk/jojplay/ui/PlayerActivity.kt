@@ -95,6 +95,12 @@ class PlayerActivity : AppCompatActivity() {
 
     // ── EPG ───────────────────────────────────────────────────────────────────
 
+    private fun showEpg() {
+        epgContainer.visibility = View.VISIBLE
+        epgHideHandler.removeCallbacks(epgHideRunnable)
+        epgHideHandler.postDelayed(epgHideRunnable, 5000L)
+    }
+
     private fun loadEpgFromSms(smsId: String, channelName: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -169,9 +175,7 @@ class PlayerActivity : AppCompatActivity() {
                     epgTitle.text = currentTitle
                     epgTime.text = if (nextStart.isNotEmpty()) "$currentStart – $nextStart" else currentStart
                     epgBar.progress = progress
-                    epgContainer.visibility = View.VISIBLE
-                    epgHideHandler.removeCallbacks(epgHideRunnable)
-                    epgHideHandler.postDelayed(epgHideRunnable, 5000L)
+                    showEpg()
                 }
 
                 val refreshDelay = if (nextStartMs > now) {
@@ -185,6 +189,83 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    // ── Controller štýl ───────────────────────────────────────────────────────
+
+    private fun applyControllerStyle() {
+        // Červená časová os
+        try {
+            val timeBar = playerView.findViewById<androidx.media3.ui.DefaultTimeBar>(
+                androidx.media3.ui.R.id.exo_progress
+            )
+            timeBar?.setPlayedColor(0xFFE30613.toInt())
+            timeBar?.setUnplayedColor(0xFF555555.toInt())
+            timeBar?.setBufferedColor(0xFFAA0000.toInt())
+            timeBar?.setScrubberColor(0xFFE30613.toInt())
+        } catch (e: Exception) { }
+
+        // Červené zvýraznenie ozubeného kolesa pri focuse
+        try {
+            val settings = playerView.findViewById<android.widget.ImageButton>(
+                androidx.media3.ui.R.id.exo_settings
+            )
+            settings?.setOnFocusChangeListener { v, hasFocus ->
+                v.setBackgroundColor(
+                    if (hasFocus) 0xFFE30613.toInt() else android.graphics.Color.TRANSPARENT
+                )
+            }
+        } catch (e: Exception) { }
+
+        // Pre live TV skry pretáčanie a progress bar
+        if (isLiveChannel) {
+            listOf(
+                androidx.media3.ui.R.id.exo_prev,
+                androidx.media3.ui.R.id.exo_next,
+                androidx.media3.ui.R.id.exo_rew,
+                androidx.media3.ui.R.id.exo_ffwd,
+                androidx.media3.ui.R.id.exo_rew_with_amount,
+                androidx.media3.ui.R.id.exo_ffwd_with_amount,
+                androidx.media3.ui.R.id.exo_progress,
+                androidx.media3.ui.R.id.exo_time,
+                androidx.media3.ui.R.id.exo_duration
+            ).forEach { id ->
+                try { playerView.findViewById<android.view.View>(id)?.visibility = View.GONE }
+                catch (e: Exception) { }
+            }
+        }
+    }
+
+    // ── Settings menu zvýraznenie ─────────────────────────────────────────────
+
+    private fun applySettingsMenuStyle() {
+        try {
+            val rootView = window.decorView.rootView
+            findAllRecyclerViews(rootView).forEach { rv ->
+                rv.addOnChildAttachStateChangeListener(
+                    object : androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
+                        override fun onChildViewAttachedToWindow(view: android.view.View) {
+                            view.setOnFocusChangeListener { v, hasFocus ->
+                                v.setBackgroundColor(
+                                    if (hasFocus) 0x55E30613.toInt()
+                                    else android.graphics.Color.TRANSPARENT
+                                )
+                            }
+                        }
+                        override fun onChildViewDetachedFromWindow(view: android.view.View) {}
+                    }
+                )
+            }
+        } catch (e: Exception) { }
+    }
+
+    private fun findAllRecyclerViews(view: android.view.View): List<androidx.recyclerview.widget.RecyclerView> {
+        val result = mutableListOf<androidx.recyclerview.widget.RecyclerView>()
+        if (view is androidx.recyclerview.widget.RecyclerView) result.add(view)
+        if (view is android.view.ViewGroup) {
+            for (i in 0 until view.childCount) result.addAll(findAllRecyclerViews(view.getChildAt(i)))
+        }
+        return result
+    }
+
     // ── Player ────────────────────────────────────────────────────────────────
 
     private fun scheduleHide() {
@@ -194,6 +275,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun showController() {
         playerView.showController()
+        playerView.postDelayed({ applyControllerStyle() }, 100L)
         scheduleHide()
     }
 
@@ -215,39 +297,12 @@ class PlayerActivity : AppCompatActivity() {
             exo.prepare()
             exo.playWhenReady = true
 
-            // Červená časová os
             playerView.setControllerVisibilityListener(
                 androidx.media3.ui.PlayerView.ControllerVisibilityListener { visibility ->
                     if (visibility == View.VISIBLE) {
-                        playerView.postDelayed({
-                            try {
-                                val timeBar = playerView.findViewById<androidx.media3.ui.DefaultTimeBar>(
-                                    androidx.media3.ui.R.id.exo_progress
-                                )
-                                timeBar?.setPlayedColor(0xFFE30613.toInt())
-                                timeBar?.setUnplayedColor(0xFF555555.toInt())
-                                timeBar?.setBufferedColor(0xFFAA0000.toInt())
-                                timeBar?.setScrubberColor(0xFFE30613.toInt())
-                            } catch (e: Exception) { }
-
-                            // Pre live TV skry pretáčanie
-                            if (isLiveChannel) {
-                                listOf(
-                                    androidx.media3.ui.R.id.exo_prev,
-                                    androidx.media3.ui.R.id.exo_next,
-                                    androidx.media3.ui.R.id.exo_rew,
-                                    androidx.media3.ui.R.id.exo_ffwd,
-                                    androidx.media3.ui.R.id.exo_rew_with_amount,
-                                    androidx.media3.ui.R.id.exo_ffwd_with_amount,
-                                    androidx.media3.ui.R.id.exo_progress,
-                                    androidx.media3.ui.R.id.exo_time,
-                                    androidx.media3.ui.R.id.exo_duration
-                                ).forEach { id ->
-                                    try { playerView.findViewById<android.view.View>(id)?.visibility = View.GONE }
-                                    catch (e: Exception) { }
-                                }
-                            }
-                        }, 100L)
+                        playerView.postDelayed({ applyControllerStyle() }, 100L)
+                        // Zvýrazni settings menu ak je otvorené
+                        playerView.postDelayed({ applySettingsMenuStyle() }, 400L)
                     }
                 }
             )
@@ -278,15 +333,26 @@ class PlayerActivity : AppCompatActivity() {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
                 // Zobraz EPG na 5 sekúnd
-                epgContainer.visibility = View.VISIBLE
-                epgHideHandler.removeCallbacks(epgHideRunnable)
-                epgHideHandler.postDelayed(epgHideRunnable, 5000L)
+                showEpg()
                 // Controller len pre archív
                 if (!isLiveChannel) showController()
                 true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
                 player?.let { if (it.isPlaying) it.pause() else it.play() }; true
+            }
+            KeyEvent.KEYCODE_MENU, KeyEvent.KEYCODE_INFO -> {
+                try {
+                    playerView.showController()
+                    playerView.postDelayed({
+                        applyControllerStyle()
+                        playerView.postDelayed({ applySettingsMenuStyle() }, 300L)
+                        playerView.findViewById<android.widget.ImageButton>(
+                            androidx.media3.ui.R.id.exo_settings
+                        )?.performClick()
+                    }, 100L)
+                } catch (e: Exception) { }
+                true
             }
             KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
                 epgContainer.visibility = View.GONE
