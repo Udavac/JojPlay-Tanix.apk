@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.dash.DashMediaSource
@@ -48,6 +49,8 @@ class PlayerActivity : AppCompatActivity() {
     private val epgHideHandler = Handler(Looper.getMainLooper())
     private val epgHideRunnable = Runnable { epgContainer.visibility = View.GONE }
     private var isLiveChannel = false
+    private var currentSpeed = 1.0f
+    private var currentAudioTrack = 0
 
     private val SMS_CHANNEL_MAP = mapOf(
         "33-joj"            to "JOJ",
@@ -83,6 +86,13 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.controllerShowTimeoutMs = 3000
         playerView.controllerAutoShow = false
+        // Vypni ExoPlayer settings – použijeme vlastný dialóg
+        playerView.setShowNextButton(false)
+        playerView.setShowPreviousButton(false)
+        playerView.setShowFastForwardButton(!isLiveChannel)
+        playerView.setShowRewindButton(!isLiveChannel)
+        playerView.setShowShuffleButton(false)
+        playerView.setShowSubtitleButton(false)
 
         initPlayer(url, isDash)
         epgContainer.visibility = View.GONE
@@ -91,6 +101,68 @@ class PlayerActivity : AppCompatActivity() {
             val smsId = SMS_CHANNEL_MAP[channelId]
             if (smsId != null) loadEpgFromSms(smsId, channelName)
         }
+    }
+
+    // ── Settings dialóg ───────────────────────────────────────────────────────
+
+    private fun openSettingsDialog() {
+        val exo = player ?: return
+
+        // Získaj audio stopy
+        val audioTracks = mutableListOf<Pair<String, Int>>()
+        val tracks = exo.currentTracks
+        var audioGroupIndex = 0
+        for (group in tracks.groups) {
+            if (group.type == androidx.media3.common.C.TRACK_TYPE_AUDIO) {
+                for (i in 0 until group.length) {
+                    val format = group.getTrackFormat(i)
+                    val lang = format.language ?: "Automaticky"
+                    val bitrate = if (format.bitrate > 0) " ${format.bitrate / 8000},${(format.bitrate / 800) % 10} MB/s" else ""
+                    val label = if (lang == "und" || lang == "Automaticky") "Automaticky" else "$lang$bitrate"
+                    audioTracks.add(Pair(label, audioGroupIndex))
+                    audioGroupIndex++
+                }
+            }
+        }
+        if (audioTracks.isEmpty()) {
+            audioTracks.add(Pair("Automaticky", 0))
+        }
+
+        val dialog = PlayerSettingsDialog(
+            context = this,
+            currentSpeed = currentSpeed,
+            audioTracks = audioTracks,
+            currentAudioTrack = currentAudioTrack,
+            onSpeedSelected = { speed ->
+                currentSpeed = speed
+                exo.setPlaybackSpeed(speed)
+            },
+            onAudioSelected = { index ->
+                currentAudioTrack = index
+                // Nastav audio stopu
+                try {
+                    val trackGroups = exo.currentTracks.groups
+                    var audioIdx = 0
+                    for (group in trackGroups) {
+                        if (group.type == androidx.media3.common.C.TRACK_TYPE_AUDIO) {
+                            for (i in 0 until group.length) {
+                                if (audioIdx == index) {
+                                    exo.trackSelectionParameters = exo.trackSelectionParameters
+                                        .buildUpon()
+                                        .setOverrideForType(
+                                            TrackSelectionOverride(group.mediaTrackGroup, i)
+                                        )
+                                        .build()
+                                    return@PlayerSettingsDialog
+                                }
+                                audioIdx++
+                            }
+                        }
+                    }
+                } catch (e: Exception) { }
+            }
+        )
+        dialog.show()
     }
 
     // ── EPG ───────────────────────────────────────────────────────────────────
@@ -192,7 +264,6 @@ class PlayerActivity : AppCompatActivity() {
     // ── Controller štýl ───────────────────────────────────────────────────────
 
     private fun applyControllerStyle() {
-        // Červená časová os
         try {
             val timeBar = playerView.findViewById<androidx.media3.ui.DefaultTimeBar>(
                 androidx.media3.ui.R.id.exo_progress
@@ -203,7 +274,7 @@ class PlayerActivity : AppCompatActivity() {
             timeBar?.setScrubberColor(0xFFE30613.toInt())
         } catch (e: Exception) { }
 
-        // Červené zvýraznenie ozubeného kolesa pri focuse
+        // Červené zvýraznenie ozubeného kolesa
         try {
             val settings = playerView.findViewById<android.widget.ImageButton>(
                 androidx.media3.ui.R.id.exo_settings
@@ -213,57 +284,9 @@ class PlayerActivity : AppCompatActivity() {
                     if (hasFocus) 0xFFE30613.toInt() else android.graphics.Color.TRANSPARENT
                 )
             }
+            // Nahraď ExoPlayer settings naším dialógom
+            settings?.setOnClickListener { openSettingsDialog() }
         } catch (e: Exception) { }
-
-        // Pre live TV skry pretáčanie a progress bar
-        if (isLiveChannel) {
-            listOf(
-                androidx.media3.ui.R.id.exo_prev,
-                androidx.media3.ui.R.id.exo_next,
-                androidx.media3.ui.R.id.exo_rew,
-                androidx.media3.ui.R.id.exo_ffwd,
-                androidx.media3.ui.R.id.exo_rew_with_amount,
-                androidx.media3.ui.R.id.exo_ffwd_with_amount,
-                androidx.media3.ui.R.id.exo_progress,
-                androidx.media3.ui.R.id.exo_time,
-                androidx.media3.ui.R.id.exo_duration
-            ).forEach { id ->
-                try { playerView.findViewById<android.view.View>(id)?.visibility = View.GONE }
-                catch (e: Exception) { }
-            }
-        }
-    }
-
-    // ── Settings menu zvýraznenie ─────────────────────────────────────────────
-
-    private fun applySettingsMenuStyle() {
-        try {
-            val rootView = window.decorView.rootView
-            findAllRecyclerViews(rootView).forEach { rv ->
-                rv.addOnChildAttachStateChangeListener(
-                    object : androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
-                        override fun onChildViewAttachedToWindow(view: android.view.View) {
-                            view.setOnFocusChangeListener { v, hasFocus ->
-                                v.setBackgroundColor(
-                                    if (hasFocus) 0x55E30613.toInt()
-                                    else android.graphics.Color.TRANSPARENT
-                                )
-                            }
-                        }
-                        override fun onChildViewDetachedFromWindow(view: android.view.View) {}
-                    }
-                )
-            }
-        } catch (e: Exception) { }
-    }
-
-    private fun findAllRecyclerViews(view: android.view.View): List<androidx.recyclerview.widget.RecyclerView> {
-        val result = mutableListOf<androidx.recyclerview.widget.RecyclerView>()
-        if (view is androidx.recyclerview.widget.RecyclerView) result.add(view)
-        if (view is android.view.ViewGroup) {
-            for (i in 0 until view.childCount) result.addAll(findAllRecyclerViews(view.getChildAt(i)))
-        }
-        return result
     }
 
     // ── Player ────────────────────────────────────────────────────────────────
@@ -277,21 +300,6 @@ class PlayerActivity : AppCompatActivity() {
         playerView.showController()
         playerView.postDelayed({ applyControllerStyle() }, 100L)
         scheduleHide()
-    }
-
-    private fun openSettings() {
-        playerView.showController()
-        playerView.postDelayed({
-            applyControllerStyle()
-            playerView.postDelayed({
-                applySettingsMenuStyle()
-                try {
-                    playerView.findViewById<android.widget.ImageButton>(
-                        androidx.media3.ui.R.id.exo_settings
-                    )?.performClick()
-                } catch (e: Exception) { }
-            }, 200L)
-        }, 100L)
     }
 
     private fun initPlayer(url: String, isDash: Boolean) {
@@ -316,7 +324,6 @@ class PlayerActivity : AppCompatActivity() {
                 androidx.media3.ui.PlayerView.ControllerVisibilityListener { visibility ->
                     if (visibility == View.VISIBLE) {
                         playerView.postDelayed({ applyControllerStyle() }, 100L)
-                        playerView.postDelayed({ applySettingsMenuStyle() }, 400L)
                     }
                 }
             )
@@ -346,15 +353,12 @@ class PlayerActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
-                // Zobraz EPG na 5 sekúnd
                 showEpg()
-                // Controller len pre archív
                 if (!isLiveChannel) showController()
                 true
             }
             KeyEvent.KEYCODE_MENU, KeyEvent.KEYCODE_INFO -> {
-                // Otvor nastavenia (funguje pre live aj archív)
-                openSettings()
+                openSettingsDialog()
                 true
             }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
