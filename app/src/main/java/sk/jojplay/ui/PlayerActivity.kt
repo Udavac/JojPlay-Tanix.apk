@@ -279,6 +279,21 @@ class PlayerActivity : AppCompatActivity() {
         scheduleHide()
     }
 
+    private fun openSettings() {
+        playerView.showController()
+        playerView.postDelayed({
+            applyControllerStyle()
+            playerView.postDelayed({
+                applySettingsMenuStyle()
+                try {
+                    playerView.findViewById<android.widget.ImageButton>(
+                        androidx.media3.ui.R.id.exo_settings
+                    )?.performClick()
+                } catch (e: Exception) { }
+            }, 200L)
+        }, 100L)
+    }
+
     private fun initPlayer(url: String, isDash: Boolean) {
         player = ExoPlayer.Builder(this).build().also { exo ->
             playerView.player = exo
@@ -301,7 +316,6 @@ class PlayerActivity : AppCompatActivity() {
                 androidx.media3.ui.PlayerView.ControllerVisibilityListener { visibility ->
                     if (visibility == View.VISIBLE) {
                         playerView.postDelayed({ applyControllerStyle() }, 100L)
-                        // Zvýrazni settings menu ak je otvorené
                         playerView.postDelayed({ applySettingsMenuStyle() }, 400L)
                     }
                 }
@@ -338,21 +352,13 @@ class PlayerActivity : AppCompatActivity() {
                 if (!isLiveChannel) showController()
                 true
             }
+            KeyEvent.KEYCODE_MENU, KeyEvent.KEYCODE_INFO -> {
+                // Otvor nastavenia (funguje pre live aj archív)
+                openSettings()
+                true
+            }
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
                 player?.let { if (it.isPlaying) it.pause() else it.play() }; true
-            }
-            KeyEvent.KEYCODE_MENU, KeyEvent.KEYCODE_INFO -> {
-                try {
-                    playerView.showController()
-                    playerView.postDelayed({
-                        applyControllerStyle()
-                        playerView.postDelayed({ applySettingsMenuStyle() }, 300L)
-                        playerView.findViewById<android.widget.ImageButton>(
-                            androidx.media3.ui.R.id.exo_settings
-                        )?.performClick()
-                    }, 100L)
-                } catch (e: Exception) { }
-                true
             }
             KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
                 epgContainer.visibility = View.GONE
