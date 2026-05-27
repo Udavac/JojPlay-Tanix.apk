@@ -52,6 +52,11 @@ class PlayerActivity : AppCompatActivity() {
     private var currentSpeed = 1.0f
     private var currentAudioTrack = 0
 
+    // Cache posledného EPG
+    private var cachedEpgTitle = ""
+    private var cachedEpgTime = ""
+    private var cachedEpgProgress = 0
+
     private val SMS_CHANNEL_MAP = mapOf(
         "33-joj"            to "JOJ",
         "206-joj-plus"      to "JOJ+Plus",
@@ -168,6 +173,11 @@ class PlayerActivity : AppCompatActivity() {
     // ── EPG ───────────────────────────────────────────────────────────────────
 
     private fun showEpg() {
+        if (cachedEpgTitle.isNotEmpty()) {
+            epgTitle.text = cachedEpgTitle
+            epgTime.text = cachedEpgTime
+            epgBar.progress = cachedEpgProgress
+        }
         epgContainer.visibility = View.VISIBLE
         epgHideHandler.removeCallbacks(epgHideRunnable)
         epgHideHandler.postDelayed(epgHideRunnable, 5000L)
@@ -244,9 +254,9 @@ class PlayerActivity : AppCompatActivity() {
                 } else 0
 
                 withContext(Dispatchers.Main) {
-                    epgTitle.text = currentTitle
-                    epgTime.text = if (nextStart.isNotEmpty()) "$currentStart – $nextStart" else currentStart
-                    epgBar.progress = progress
+                    cachedEpgTitle = currentTitle
+                    cachedEpgTime = if (nextStart.isNotEmpty()) "$currentStart – $nextStart" else currentStart
+                    cachedEpgProgress = progress
                     showEpg()
                 }
 
