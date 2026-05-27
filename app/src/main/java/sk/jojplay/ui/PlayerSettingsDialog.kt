@@ -190,6 +190,38 @@ class PlayerSettingsDialog(
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        val lm = recycler.layoutManager as? LinearLayoutManager
+        val adapter = recycler.adapter ?: return super.onKeyDown(keyCode, event)
+        val count = adapter.itemCount
+
+        when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_UP -> {
+                val focused = recycler.focusedChild
+                val pos = recycler.getChildAdapterPosition(focused ?: return super.onKeyDown(keyCode, event))
+                val next = (pos - 1).coerceAtLeast(0)
+                recycler.layoutManager?.findViewByPosition(next)?.requestFocus()
+                return true
+            }
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                val focused = recycler.focusedChild
+                val pos = recycler.getChildAdapterPosition(focused ?: return super.onKeyDown(keyCode, event))
+                val next = (pos + 1).coerceAtMost(count - 1)
+                recycler.layoutManager?.findViewByPosition(next)?.requestFocus()
+                return true
+            }
+            KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
+                if (currentSection != SECTION_MAIN) {
+                    showMainMenu()
+                    return true
+                }
+                dismiss()
+                return true
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE) {
             if (currentSection != SECTION_MAIN) {
                 showMainMenu()
