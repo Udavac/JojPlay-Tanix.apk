@@ -197,16 +197,20 @@ class PlayerSettingsDialog(
         when (keyCode) {
             KeyEvent.KEYCODE_DPAD_UP -> {
                 val focused = recycler.focusedChild
-                val pos = recycler.getChildAdapterPosition(focused ?: return super.onKeyDown(keyCode, event))
+                val pos = recycler.getChildAdapterPosition(focused ?: return true)
                 val next = (pos - 1).coerceAtLeast(0)
                 recycler.layoutManager?.findViewByPosition(next)?.requestFocus()
                 return true
             }
             KeyEvent.KEYCODE_DPAD_DOWN -> {
                 val focused = recycler.focusedChild
-                val pos = recycler.getChildAdapterPosition(focused ?: return super.onKeyDown(keyCode, event))
+                val pos = recycler.getChildAdapterPosition(focused ?: return true)
                 val next = (pos + 1).coerceAtMost(count - 1)
                 recycler.layoutManager?.findViewByPosition(next)?.requestFocus()
+                return true
+            }
+            KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                // Ignoruj – nevyhod z dialógu
                 return true
             }
             KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
@@ -218,7 +222,7 @@ class PlayerSettingsDialog(
                 return true
             }
         }
-        return super.onKeyDown(keyCode, event)
+        return true
     }
 
 }
