@@ -91,13 +91,16 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.controllerShowTimeoutMs = 3000
         playerView.controllerAutoShow = false
-        // Vypni ExoPlayer settings – použijeme vlastný dialóg
         playerView.setShowNextButton(false)
         playerView.setShowPreviousButton(false)
         playerView.setShowFastForwardButton(!isLiveChannel)
         playerView.setShowRewindButton(!isLiveChannel)
         playerView.setShowShuffleButton(false)
         playerView.setShowSubtitleButton(false)
+        // Pre live TV vypni controller úplne – OK pôjde do onKeyDown
+        if (isLiveChannel) {
+            playerView.useController = false
+        }
 
         initPlayer(url, isDash)
         epgContainer.visibility = View.GONE
