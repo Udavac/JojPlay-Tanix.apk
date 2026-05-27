@@ -221,13 +221,4 @@ class PlayerSettingsDialog(
         return super.onKeyDown(keyCode, event)
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE) {
-            if (currentSection != SECTION_MAIN) {
-                showMainMenu()
-                return true
-            }
-        }
-        return super.onKeyDown(keyCode, event)
-    }
 }
