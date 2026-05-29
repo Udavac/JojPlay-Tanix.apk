@@ -33,22 +33,25 @@ class SettingsActivity : AppCompatActivity() {
         emailInput.setText(tokenManager.email)
         passInput.setText(tokenManager.password)
 
-        // Červené orámovanie pri focuse – email
-        emailInput.setOnFocusChangeListener { v, hasFocus ->
-            v.setBackgroundColor(if (hasFocus) 0x33E30613.toInt() else Color.TRANSPARENT)
-        }
+       // Email a heslo pri focuse – orámovanie
+emailInput.setOnFocusChangeListener { v, hasFocus ->
+    v.setBackgroundColor(if (hasFocus) 0xFFE30613.toInt() else Color.TRANSPARENT)
+}
+passInput.setOnFocusChangeListener { v, hasFocus ->
+    v.setBackgroundColor(if (hasFocus) 0xFFE30613.toInt() else Color.TRANSPARENT)
+}
 
-        // Červené orámovanie pri focuse – heslo
-        passInput.setOnFocusChangeListener { v, hasFocus ->
-            v.setBackgroundColor(if (hasFocus) 0x33E30613.toInt() else Color.TRANSPARENT)
-        }
+// Uložiť pri focuse
+btnSave.setOnFocusChangeListener { v, hasFocus ->
+    (v as Button).backgroundTintList = ColorStateList.valueOf(
+        if (hasFocus) 0xFFE30613.toInt() else 0xFF333333.toInt()
+    )
+}
 
-        // Uložiť – červená len pri focuse
-        btnSave.setOnFocusChangeListener { v, hasFocus ->
-            (v as Button).backgroundTintList = ColorStateList.valueOf(
-                if (hasFocus) 0xFFE30613.toInt() else 0xFF333333.toInt()
-            )
-        }
+// Checkbox pri focuse
+checkShowPass.setOnFocusChangeListener { v, hasFocus ->
+    v.setBackgroundColor(if (hasFocus) 0xFFE30613.toInt() else Color.TRANSPARENT)
+}
 
         // Zobraziť / skryť heslo
         checkShowPass.setOnCheckedChangeListener { _, isChecked ->
