@@ -33,28 +33,40 @@ class SettingsActivity : AppCompatActivity() {
         emailInput.setText(tokenManager.email)
         passInput.setText(tokenManager.password)
 
-emailInput.setOnFocusChangeListener { v, hasFocus ->
-    (v as EditText).setBackgroundResource(
-        if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
-    )
-}
-passInput.setOnFocusChangeListener { v, hasFocus ->
-    (v as EditText).setBackgroundResource(
-        if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
-    )
-}
+        // Červené orámovanie pri focuse – email
+        emailInput.setOnFocusChangeListener { v, hasFocus ->
+            (v as EditText).setBackgroundResource(
+                if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
+            )
+        }
 
-// Uložiť pri focuse
-btnSave.setOnFocusChangeListener { v, hasFocus ->
-    (v as Button).backgroundTintList = ColorStateList.valueOf(
-        if (hasFocus) 0xFFE30613.toInt() else 0xFF333333.toInt()
-    )
-}
+        // Červené orámovanie pri focuse – heslo
+        passInput.setOnFocusChangeListener { v, hasFocus ->
+            (v as EditText).setBackgroundResource(
+                if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
+            )
+        }
 
-// Checkbox pri focuse
-checkShowPass.setOnFocusChangeListener { v, hasFocus ->
-    v.setBackgroundColor(if (hasFocus) 0xFFE30613.toInt() else Color.TRANSPARENT)
-}
+        // Červené orámovanie pri focuse – Zobraziť heslo
+        checkShowPass.setOnFocusChangeListener { v, hasFocus ->
+            v.setBackgroundResource(
+                if (hasFocus) R.drawable.checkbox_bg_focused else android.R.color.transparent
+            )
+        }
+
+        // Červené orámovanie pri focuse – Zrušiť
+        btnCancel.setOnFocusChangeListener { v, hasFocus ->
+            v.setBackgroundResource(
+                if (hasFocus) R.drawable.button_cancel_bg_focused else android.R.color.transparent
+            )
+        }
+
+        // Uložiť – pestrejšia červená pri focuse
+        btnSave.setOnFocusChangeListener { v, hasFocus ->
+            (v as Button).backgroundTintList = ColorStateList.valueOf(
+                if (hasFocus) 0xFFFF1010.toInt() else 0xFF333333.toInt()
+            )
+        }
 
         // Zobraziť / skryť heslo
         checkShowPass.setOnCheckedChangeListener { _, isChecked ->
@@ -100,11 +112,6 @@ checkShowPass.setOnFocusChangeListener { v, hasFocus ->
                 checkShowPass.isChecked = !checkShowPass.isChecked
                 true
             } else false
-        }
-
-        // Červené zvýraznenie checkboxu pri focuse
-        checkShowPass.setOnFocusChangeListener { v, hasFocus ->
-            v.setBackgroundColor(if (hasFocus) 0x33E30613.toInt() else Color.TRANSPARENT)
         }
 
         emailInput.requestFocus()
