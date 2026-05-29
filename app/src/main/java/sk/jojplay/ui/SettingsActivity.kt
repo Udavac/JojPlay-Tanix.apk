@@ -33,12 +33,15 @@ class SettingsActivity : AppCompatActivity() {
         emailInput.setText(tokenManager.email)
         passInput.setText(tokenManager.password)
 
-       // Email a heslo pri focuse – orámovanie
 emailInput.setOnFocusChangeListener { v, hasFocus ->
-    v.setBackgroundColor(if (hasFocus) 0xFFE30613.toInt() else Color.TRANSPARENT)
+    (v as EditText).setBackgroundResource(
+        if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
+    )
 }
 passInput.setOnFocusChangeListener { v, hasFocus ->
-    v.setBackgroundColor(if (hasFocus) 0xFFE30613.toInt() else Color.TRANSPARENT)
+    (v as EditText).setBackgroundResource(
+        if (hasFocus) R.drawable.input_bg_focused else R.drawable.input_bg
+    )
 }
 
 // Uložiť pri focuse
