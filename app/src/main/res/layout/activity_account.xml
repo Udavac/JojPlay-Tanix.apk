@@ -11,12 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Môj účet"
-        android:textColor="#FFFFFF"
+        android:textColor="#FF0000"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
     
-  <!-- Email -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,18 +25,17 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Email:"
-            android:textColor="#AAAAAA"
+            android:textColor="#FF0000"
             android:textSize="16sp"/>
         <TextView
             android:id="@+id/tvAccountEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="#00FF00"
             android:textSize="16sp"
             android:textStyle="bold"/>
     </LinearLayout>
 
-    <!-- Stav -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +45,7 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Stav:"
-            android:textColor="#AAAAAA"
+            android:textColor="#FF0000"
             android:textSize="16sp"/>
         <TextView
             android:id="@+id/tvAccountStatus"
@@ -58,7 +56,6 @@
             android:textStyle="bold"/>
     </LinearLayout>
 
-    <!-- Platnosť tokenu -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,7 +65,7 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Token:"
-            android:textColor="#AAAAAA"
+            android:textColor="#FF0000"
             android:textSize="16sp"/>
         <TextView
             android:id="@+id/tvAccountExpiry"
@@ -78,12 +75,20 @@
             android:textSize="16sp"/>
     </LinearLayout>
 
-    <!-- Info -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pre návrat stlač tlačidlo Späť"
-        android:textColor="#666666"
-        android:textSize="13sp"/>
+        android:text="Pre návrat stlač tlačidlo"
+        android:textColor="#FFA500"
+        android:textSize="14sp"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Späť"
+        android:textColor="#FF0000"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
 
 </LinearLayout>
