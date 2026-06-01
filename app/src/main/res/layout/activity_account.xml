@@ -25,7 +25,7 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Email:"
-            android:textColor="#FF0000"
+            android:textColor="#FFFFFF"
             android:textSize="16sp"/>
         <TextView
             android:id="@+id/tvAccountEmail"
@@ -45,7 +45,7 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Stav:"
-            android:textColor="#FF0000"
+            android:textColor="#FFFFFF"
             android:textSize="16sp"/>
         <TextView
             android:id="@+id/tvAccountStatus"
@@ -65,13 +65,13 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Token:"
-            android:textColor="#FF0000"
+            android:textColor="#FFFFFF"
             android:textSize="16sp"/>
         <TextView
             android:id="@+id/tvAccountExpiry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="#00FF00"
             android:textSize="16sp"/>
     </LinearLayout>
 
