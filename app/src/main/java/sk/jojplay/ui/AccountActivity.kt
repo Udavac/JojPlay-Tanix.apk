@@ -21,22 +21,30 @@ class AccountActivity : AppCompatActivity() {
         val tvStatus = findViewById<TextView>(R.id.tvAccountStatus)
         val tvExpiry = findViewById<TextView>(R.id.tvAccountExpiry)
 
-        // Email
+        // Email - vynútená ZELENÁ farba (hex: #00FF00)
         tvEmail.text = tokenManager.email.ifBlank { "Neprihlásený" }
+        tvEmail.setTextColor(0xFF00FF00.toInt())
 
         // Stav a platnosť tokenu
         val expiry = tokenManager.tokenExpiry
         val now = System.currentTimeMillis()
 
         if (expiry > 0 && now < expiry) {
+            // Token je platný -> text s kvačkou bude ZELENÝ
             tvStatus.text = "✅ Prihlásený"
-            tvStatus.setTextColor(0xFF4CAF50.toInt())
+            tvStatus.setTextColor(0xFF00FF00.toInt())
+            
+            // Čas platnosti -> ZELENÝ
             val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
             tvExpiry.text = "Token platný do: ${sdf.format(Date(expiry))}"
+            tvExpiry.setTextColor(0xFF00FF00.toInt())
         } else {
+            // Token expiroval -> texty budú ČERVENÉ (hex: #FF0000)
             tvStatus.text = "⚠️ Token expirovaný"
-            tvStatus.setTextColor(0xFFE30613.toInt())
+            tvStatus.setTextColor(0xFFFF0000.toInt())
+            
             tvExpiry.text = "Reštartuj apku pre obnovenie"
+            tvExpiry.setTextColor(0xFFFF0000.toInt())
         }
     }
 
