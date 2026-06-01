@@ -21,7 +21,7 @@ class AccountActivity : AppCompatActivity() {
         val tvStatus = findViewById<TextView>(R.id.tvAccountStatus)
         val tvExpiry = findViewById<TextView>(R.id.tvAccountExpiry)
 
-        // Email - vynútená ZELENÁ farba (hex: #00FF00)
+        // Email - ZELENÁ farba hodnoty
         tvEmail.text = tokenManager.email.ifBlank { "Neprihlásený" }
         tvEmail.setTextColor(0xFF00FF00.toInt())
 
@@ -30,16 +30,31 @@ class AccountActivity : AppCompatActivity() {
         val now = System.currentTimeMillis()
 
         if (expiry > 0 && now < expiry) {
-            // Token je platný -> text s kvačkou bude ZELENÝ
-            tvStatus.text = "✅ Prihlásený"
-            tvStatus.setTextColor(0xFF00FF00.toInt())
+            val statusText = "✓ Prihlásený"
+            val spannable = android.text.SpannableString(statusText)
             
-            // Čas platnosti -> ZELENÝ
+            // 1. Znak kvačky (index 0 až 1) bude ČERVENÝ (hex: #FFFF0000)
+            spannable.setSpan(
+                android.text.style.ForegroundColorSpan(0xFFFF0000.toInt()),
+                0, 1, 
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            
+            // 2. Slovo " Prihlásený" (od indexu 1 do konca) bude ZELENÉ (hex: #00FF00)
+            spannable.setSpan(
+                android.text.style.ForegroundColorSpan(0xFF00FF00.toInt()),
+                1, statusText.length, 
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            
+            tvStatus.text = spannable
+            
+            // Token platný do: čas -> ZELENÁ farba hodnoty
             val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
             tvExpiry.text = "Token platný do: ${sdf.format(Date(expiry))}"
             tvExpiry.setTextColor(0xFF00FF00.toInt())
         } else {
-            // Token expiroval -> texty budú ČERVENÉ (hex: #FF0000)
+            // Ak token vypršal, chybový stav kompletne sčervená kvôli varovaniu
             tvStatus.text = "⚠️ Token expirovaný"
             tvStatus.setTextColor(0xFFFF0000.toInt())
             
