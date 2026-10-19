@@ -1,4 +1,4 @@
-# JOJ Play TV_unofficial_test - Android TV Verzia
+# JOJ Play TV_unofficial- Android TV Verzia
 ## Pre Android TV boxy
 
 ## 🎮 Ovládanie diaľkovým ovládačom
@@ -6,7 +6,7 @@
 ## 📱 Kompatibilita
 
 - ✅ Android 9 (API 28) - Tanix TX3
-- ✅ Android 10, 11, 12, 13
+- ✅ Android 10, 11, 12, 13...
 - ✅ Diaľkové ovládače D-Pad
 - ✅ Infračervené ovládače
 - ✅ Bluetooth ovládače
@@ -18,4 +18,5 @@
 
 ## 📝 Licencia
 
-Tento projekt je určený pre osobné použitie. JOJ Play™ je ochranná známka JOJ Group.
+Tento projekt je určený pre osobné použitie.
+"JOJ Play™ je ochranná známka JOJ Group.
