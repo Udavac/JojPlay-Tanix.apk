@@ -1,4 +1,5 @@
-# JOJ Play TV_unofficial- Android TV Verzia
+# JOJ Play TV_unofficial 
+  Android TV Verzia
 ## Pre Android TV boxy
 
 ## 🎮 Ovládanie diaľkovým ovládačom
